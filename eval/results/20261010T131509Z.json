@@ -1,0 +1,2077 @@
+{
+  "meta": {
+    "timestamp": "20261010T131509Z",
+    "n_items": 43,
+    "n_unanswerable": 9,
+    "llm_model": "haiku",
+    "judge_model": "haiku",
+    "provider": "claude_cli",
+    "embedding_model": "intfloat/multilingual-e5-small",
+    "top_k": 6,
+    "judge_prompt_version": "v1"
+  },
+  "aggregate": {
+    "baseline": {
+      "n_items": 43,
+      "n_errors": 0,
+      "hit_rate_at_k": 1.0,
+      "answer_correctness": 0.9705882352941176,
+      "groundedness": 0.8181818181818182,
+      "citation_accuracy": 0.7745098039215685,
+      "correct_refusal_rate": 1.0,
+      "false_refusal_rate": 0.029411764705882353,
+      "avg_latency_s": 5.23164300488438,
+      "avg_llm_calls": 1.0,
+      "correctness_by_category": {
+        "lookup": 1.0,
+        "multi_chunk": 1.0,
+        "cross_lingual": 1.0,
+        "vocab_mismatch": 0.875
+      }
+    },
+    "agentic": {
+      "n_items": 43,
+      "n_errors": 0,
+      "hit_rate_at_k": 1.0,
+      "answer_correctness": 0.38235294117647056,
+      "groundedness": 0.9230769230769231,
+      "citation_accuracy": 0.27450980392156865,
+      "correct_refusal_rate": 1.0,
+      "false_refusal_rate": 0.6176470588235294,
+      "avg_latency_s": 67.08272206590803,
+      "avg_llm_calls": 16.023255813953487,
+      "correctness_by_category": {
+        "lookup": 0.375,
+        "multi_chunk": 0.375,
+        "cross_lingual": 0.0,
+        "vocab_mismatch": 0.5
+      }
+    }
+  },
+  "items": {
+    "baseline": [
+      {
+        "question": "How much water does the tank of the AromaPro E200 hold?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "The AromaPro E200 water tank holds 1.8 litres [2]. You fill it with fresh, cold water up to the MAX mark [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 3.6453599170199595,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 2,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 2,
+            "snippet": "2. Daily Operation\nFilling the water tank: remove the tank at the rear and fill it with fresh, cold water up to the MAX\nmark. The tank capacity is 1.8 litres.\nHeat-up: after switching on, the machine "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "What voltage and power consumption does the espresso machine have?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "The AromaPro E200 espresso machine is rated for 230 V at 50 Hz and consumes 1450 W [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 4.449685708037578,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 1,
+            "snippet": "AromaPro E200 Espresso Machine\n1. Safety Instructions\nRead this manual before using the AromaPro E200 espresso machine. Keep it for future reference.\nOperate the machine only on a stable, level, heat-"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "How long does the machine need to heat up?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "After switching on, the AromaPro E200 espresso machine needs approximately 25 seconds to heat up. The ready light turns steady when brewing is possible [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 4.401810667011887,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 2,
+            "snippet": "2. Daily Operation\nFilling the water tank: remove the tank at the rear and fill it with fresh, cold water up to the MAX\nmark. The tank capacity is 1.8 litres.\nHeat-up: after switching on, the machine "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "What is the pump pressure of the machine?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "The pump pressure of the AromaPro E200 espresso machine is 15 bar [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 4.090404124988709,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 2,
+            "snippet": "2. Daily Operation\nFilling the water tank: remove the tank at the rear and fill it with fresh, cold water up to the MAX\nmark. The tank capacity is 1.8 litres.\nHeat-up: after switching on, the machine "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Which error code indicates a jammed grinder?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "The error code for a jammed grinder is E07. The source states \"Error E07: the grinder is jammed. Switch the machine off, remove the beans from the hopper and clean the burrs.\" [1]",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 3.8585769170313142,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "How long is the warranty on the espresso machine?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "The warranty on the AromaPro E200 espresso machine is 24 months from the date of purchase [1]. The manual also gives a customer service number, +49 800 555 0101, which the source marks as fictional [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 3.0844814580050297,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "How often should the water filter cartridge be replaced?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "The water filter cartridge should be replaced every 2 months or after 60 litres, whichever comes first [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 3.7913078750134446,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 3,
+            "snippet": "3. Cleaning and Maintenance\nDaily: empty the drip tray and rinse the portafilter and filter baskets with warm water.\nWeekly: backflush the brew group. Insert the blind filter basket with one cleaning "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Welche Netzspannung benötigt das Ladegerät VoltMax LX-48?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Das Staplerladegerät VoltMax LX-48 benötigt einen Netzanschluss mit 400 V dreiphasig, abgesichert mit 16 A [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 3.329166458977852,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 1,
+            "snippet": "VoltMax LX-48 Staplerladegerät\n1. Sicherheitshinweise\nDas Staplerladegerät VoltMax LX-48 darf nur von geschultem Personal bedient werden.\nDer Ladeplatz muss gut belüftet sein, da beim Laden von Blei-S"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie hoch ist der maximale Ladestrom des Ladegeräts?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Der maximale Ladestrom des Ladegeräts beträgt 80 A [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 4.133217833004892,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie lange dauert das Laden einer Batterie mit 500 Ah?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Eine Batterie mit 500 Ah benötigt laut Handbuch etwa 8 Stunden Ladezeit, bei einer Entladungstiefe von 80 % [1]. Eine wöchentliche Ausgleichsladung dauert zusätzlich etwa 3 Stunden [1]. Zur Einordnung: Die Fehlermeldung F5 („Ladezeitüberschreitung nach 14 Stunden“) zeigt an, dass die Batterie geprüft werden sollte [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 3.9742769169970416,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          },
+          {
+            "id": 2,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie lange beträgt die Garantie auf das Staplerladegerät?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Die Garantie für das Staplerladegerät VoltMax LX-48 beträgt 36 Monate ab Kaufdatum [1]. Die Quelle zum Staplerladegerät ist forklift_charger_manual_de.pdf, Seite 4. Die Angabe von 24 Monaten in Quelle [4] betrifft einen Luftreiniger und ist für diese Frage nicht relevant.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 4.1864679580321535,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          },
+          {
+            "id": 4,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Störungen und Garantie",
+            "snippet": "Störungen und Garantie\nE1: Lüfter blockiert. Schalten Sie das Gerät aus und entfernen Sie Fremdkörper.\nE2: Sensor verschmutzt. Reinigen Sie die Sensoröffnung vorsichtig mit einem trockenen Wattestäbch"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Nach wie vielen Monaten muss der Lüfterfilter des Ladegeräts gewechselt werden?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Der Lüfterfilter des Ladegeräts muss alle 6 Monate gewechselt werden, bei staubiger Umgebung früher [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 3.719427416974213,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Für welche Raumgröße ist der Luftreiniger ClearAir P5 geeignet?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Der Luftreiniger ClearAir P5 ist für Räume bis 45 m² geeignet [3].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 5.214522292022593,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 3,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Technische Daten",
+            "snippet": "Technische Daten\nGeeignet für Räume bis 45 m². Der Luftdurchsatz (CADR) beträgt 320 m³/h. Die Leistungsaufnahme beträgt 55 W.\nDie Lautstärke beträgt 24 dB im Schlafmodus und 52 dB auf Stufe 3."
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie laut ist der Luftreiniger im Schlafmodus?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Im Schlafmodus beträgt die Lautstärke des Luftreinigers 24 dB [2]. Zum Vergleich: auf Stufe 3 sind es 52 dB [2]. Der Schlafmodus ist außerdem auf leisen Betrieb ausgelegt, wobei die Anzeige abgedunkelt wird [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 4.042506084020715,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Betriebsarten",
+            "snippet": "Betriebsarten\nAutomatikmodus: Der Partikelsensor regelt die Lüfterstufe selbstständig nach der Luftqualität.\nSchlafmodus: leiser Betrieb, die Anzeige wird abgedunkelt. Turbomodus: maximale Leistung fü"
+          },
+          {
+            "id": 2,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Technische Daten",
+            "snippet": "Technische Daten\nGeeignet für Räume bis 45 m². Der Luftdurchsatz (CADR) beträgt 320 m³/h. Die Leistungsaufnahme beträgt 55 W.\nDie Lautstärke beträgt 24 dB im Schlafmodus und 52 dB auf Stufe 3."
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie oft muss der HEPA-Filter H13 gewechselt werden?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Der HEPA-Filter H13 muss alle 12 Monate gewechselt werden [1]. Dies steht im Abschnitt „Filterwechsel“ des Luftreiniger-Handbuchs (air_purifier_manual_de.docx) [1]. (Question was asked in English; answer given in German as the source text is German. Translation: the HEPA H13 filter must be replaced every 12 months [1].)",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": false,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 6.0194903750089,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Filterwechsel",
+            "snippet": "Filterwechsel\nDer HEPA-Filter H13 muss alle 12 Monate gewechselt werden. Der Aktivkohlefilter muss alle 6 Monate gewechselt werden.\nDen Vorfilter alle 2 Wochen mit einem Staubsauger absaugen.\nDie Filt"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie lange gilt die Garantie auf den Luftreiniger?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Die Garantie auf den Luftreiniger gilt 24 Monate ab Kaufdatum [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 3.789600624993909,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 2,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Störungen und Garantie",
+            "snippet": "Störungen und Garantie\nE1: Lüfter blockiert. Schalten Sie das Gerät aus und entfernen Sie Fremdkörper.\nE2: Sensor verschmutzt. Reinigen Sie die Sensoröffnung vorsichtig mit einem trockenen Wattestäbch"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "What should I do before and after frothing milk, and how long until steam is ready?",
+        "category": "multi_chunk",
+        "language": "en",
+        "status": "answered",
+        "answer": "Before and after frothing milk, purge the steam wand briefly before and after every use. Immediately after frothing, wipe the wand with a damp cloth [1]. Steam is ready about 40 seconds after you press the steam button. Wait until the steam light stays on [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 5.277415167016443,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 2,
+            "snippet": "2. Daily Operation\nFilling the water tank: remove the tank at the rear and fill it with fresh, cold water up to the MAX\nmark. The tank capacity is 1.8 litres.\nHeat-up: after switching on, the machine "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Describe the weekly and the quarterly cleaning tasks for the espresso machine.",
+        "category": "multi_chunk",
+        "language": "en",
+        "status": "answered",
+        "answer": "**Weekly task: backflushing the brew group.** Insert the blind filter basket with one cleaning tablet and run 5 cycles of 10 seconds each, then rinse with clean water [1].\n\n**Quarterly task: descaling.** The manual does not use the word \"quarterly\". It says to descale every 3 months, or immediately when the descale light blinks [1]. Mix 1 litre of descaling solution at a ratio of 1:3 with water. The descaling programme takes about 20 minutes. Afterwards, rinse the tank and run two full tanks of fresh water through the machine [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 6.435408917022869,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 3,
+            "snippet": "3. Cleaning and Maintenance\nDaily: empty the drip tray and rinse the portafilter and filter baskets with warm water.\nWeekly: backflush the brew group. Insert the blind filter basket with one cleaning "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "What do errors E02 and E04 mean and how are they fixed?",
+        "category": "multi_chunk",
+        "language": "en",
+        "status": "answered",
+        "answer": "**Error E02** means the overheating protection (thermal fuse) has been triggered. The fix is to unplug the machine and let it cool down for 30 minutes before restarting [1].\n\n**Error E04** means there is a pump blockage, which is usually caused by limescale. The fix is to run the descaling programme [1]. The manual's descaling procedure is: mix 1 litre of descaling solution at a ratio of 1:3 with water. The programme takes about 20 minutes. Afterwards, rinse the tank and run two full tanks of fresh water through the machine [5]. The manual recommends descaling every 3 months, or immediately when the descale light blinks [5].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 5.996643499995116,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          },
+          {
+            "id": 5,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 3,
+            "snippet": "3. Cleaning and Maintenance\nDaily: empty the drip tray and rinse the portafilter and filter baskets with warm water.\nWeekly: backflush the brew group. Insert the blind filter basket with one cleaning "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Welche Sicherheitsvorkehrungen gelten im Ladebereich und welche Schutzausrüstung ist erforderlich?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "answered",
+        "answer": "Im Ladebereich des Staplerladegeräts VoltMax LX-48 gelten folgende Sicherheitsvorkehrungen: Der Ladeplatz muss gut belüftet sein, da beim Laden von Blei-Säure-Batterien explosives Wasserstoffgas entstehen kann. Rauchen, offenes Feuer und Funkenbildung sind im Ladebereich verboten [1]. Beim Arbeiten an der Batterie sind Schutzbrille und säurefeste Handschuhe zu tragen [1]. Das Gerät selbst darf nur von geschultem Personal bedient werden [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 5.332363666035235,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 1,
+            "snippet": "VoltMax LX-48 Staplerladegerät\n1. Sicherheitshinweise\nDas Staplerladegerät VoltMax LX-48 darf nur von geschultem Personal bedient werden.\nDer Ladeplatz muss gut belüftet sein, da beim Laden von Blei-S"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Welche Ladeprogramme bietet das Ladegerät und wie startet man den Ladevorgang?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "answered",
+        "answer": "Das Ladegerät bietet drei Ladeprogramme: P1 Blei-Säure (Standard), P2 Gel-Batterie und P3 Lithium-Ionen. Das Programm wählen Sie mit der Programm-Taste [1].\n\nSo starten Sie den Ladevorgang: Verbinden Sie zuerst den Batteriestecker mit dem Ladegerät. Das Gerät erkennt die Batteriespannung automatisch. Drücken Sie anschließend die Start-Taste für 2 Sekunden [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 6.129496458976064,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Welche Wartungsaufgaben fallen beim Ladegerät monatlich und jährlich an?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "answered",
+        "answer": "Monatlich: Die Kontakte und Stecker müssen geprüft und gereinigt sowie alle Kabel auf Beschädigungen kontrolliert werden [3].\n\nJährlich: Eine jährliche Prüfung durch eine Elektrofachkraft nach DGUV Vorschrift 3 ist verpflichtend [3].\n\nDie Quellen nennen außerdem den Wechsel des Lüfterfilters alle 6 Monate (früher bei staubiger Umgebung) [3], dies fällt jedoch weder unter die monatlichen noch unter die jährlichen Aufgaben.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 5.682809707999695,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 3,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Welche Filter hat der Luftreiniger und wann müssen sie gewechselt oder gereinigt werden?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "answered",
+        "answer": "Der Luftreiniger ClearAir P5 hat drei Filter, die unterschiedlich gewartet werden müssen:\n\n- **HEPA-Filter H13:** muss alle 12 Monate gewechselt werden [2].\n- **Aktivkohlefilter:** muss alle 6 Monate gewechselt werden [2].\n- **Vorfilter:** muss alle 2 Wochen mit einem Staubsauger abgesaugt werden. Er wird also gereinigt, nicht gewechselt [2].\n\nDie Filterwechselanzeige leuchtet rot nach 8000 Betriebsstunden. Nach dem Wechsel halten Sie die Filter-Taste 5 Sekunden gedrückt, um die Anzeige zurückzusetzen [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 5.528635292022955,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 2,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Filterwechsel",
+            "snippet": "Filterwechsel\nDer HEPA-Filter H13 muss alle 12 Monate gewechselt werden. Der Aktivkohlefilter muss alle 6 Monate gewechselt werden.\nDen Vorfilter alle 2 Wochen mit einem Staubsauger absaugen.\nDie Filt"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Welche Betriebsarten hat der Luftreiniger und wie funktioniert der Turbomodus?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "answered",
+        "answer": "The ClearAir P5 air purifier has three operating modes:\n- **Automatic mode:** The particle sensor adjusts the fan level automatically based on air quality [1].\n- **Sleep mode:** Quiet operation, with the display dimmed [1]. The noise level is 24 dB in sleep mode [4].\n- **Turbo mode:** Maximum performance for 30 minutes. After that, the device switches to automatic mode [1].\n\nThe device can also be controlled over Wi-Fi through the ClearAir app, but only 2.4 GHz networks are supported [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 5.60632204200374,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Betriebsarten",
+            "snippet": "Betriebsarten\nAutomatikmodus: Der Partikelsensor regelt die Lüfterstufe selbstständig nach der Luftqualität.\nSchlafmodus: leiser Betrieb, die Anzeige wird abgedunkelt. Turbomodus: maximale Leistung fü"
+          },
+          {
+            "id": 4,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Technische Daten",
+            "snippet": "Technische Daten\nGeeignet für Räume bis 45 m². Der Luftdurchsatz (CADR) beträgt 320 m³/h. Die Leistungsaufnahme beträgt 55 W.\nDie Lautstärke beträgt 24 dB im Schlafmodus und 52 dB auf Stufe 3."
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "What does the LED on the forklift charger show when charging is complete?",
+        "category": "cross_lingual",
+        "language": "en",
+        "status": "answered",
+        "answer": "Wenn der Ladevorgang abgeschlossen ist, leuchtet die grüne LED dauerhaft. Während des Ladens blinkt sie [2]. Eine dauerhaft leuchtende rote LED zeigt dagegen eine Störung an, nicht den Abschluss der Ladung [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": false,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 5.584689499984961,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          },
+          {
+            "id": 2,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "How do I reset the filter change indicator on the air purifier?",
+        "category": "cross_lingual",
+        "language": "en",
+        "status": "answered",
+        "answer": "To reset the filter change indicator on the air purifier, first replace the filters, then press and hold the filter button for 5 seconds. This resets the display. [5] The indicator lights red after 8000 operating hours, which is when the filter change is due. [5]\n\nSource [5] is the only source on this topic. It gives no other reset method, and it does not say what the button looks like or where it is located.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 5.063879666966386,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 5,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Filterwechsel",
+            "snippet": "Filterwechsel\nDer HEPA-Filter H13 muss alle 12 Monate gewechselt werden. Der Aktivkohlefilter muss alle 6 Monate gewechselt werden.\nDen Vorfilter alle 2 Wochen mit einem Staubsauger absaugen.\nDie Filt"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "The coffee maker shut itself off because it got too hot. What now?",
+        "category": "vocab_mismatch",
+        "language": "en",
+        "status": "answered",
+        "answer": "The sources describe an espresso machine (AromaPro E200), so I'm assuming that's the machine you mean. If the machine shut off from overheating, the manual says the overheating protection (thermal fuse) was triggered for error E02. Unplug the machine and let it cool down for 30 minutes before restarting [1].\n\nAlso check the operating conditions: the ambient temperature during operation must not exceed 35 degrees Celsius [3]. The steam wand and brew group become very hot during use, so don't touch them while the machine is running [3].\n\nThe sources don't say what to do if the machine keeps overheating after the cool-down period.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 6.041890374966897,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          },
+          {
+            "id": 3,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 1,
+            "snippet": "AromaPro E200 Espresso Machine\n1. Safety Instructions\nRead this manual before using the AromaPro E200 espresso machine. Keep it for future reference.\nOperate the machine only on a stable, level, heat-"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "My espresso tastes watery. How can I fix it?",
+        "category": "vocab_mismatch",
+        "language": "en",
+        "status": "answered",
+        "answer": "The sources do not mention \"watery\" coffee directly. The closest entry is \"Coffee tastes too weak,\" and the manual's fix for that is to select a finer grind. The grinder has settings 1 to 12, where 1 is the finest, and the factory default is 5 [1].\n\nOther points from the manual that may help:\n- Check the dose. A single shot uses 8 g of ground coffee and a double shot uses 16 g. The single-shot button gives 30 ml and the double-shot button gives 60 ml [2].\n- Descale the machine every 3 months, or immediately when the descale light blinks. Use 1 litre of descaling solution mixed 1:3 with water, and run the descaling programme (about 20 minutes). Afterwards, rinse the tank and run two full tanks of fresh water through the machine [3]. Limescale can also cause pump blockage (error E04), which is fixed by the descaling programme [1].\n- Replace the water filter cartridge every 2 months or after 60 litres, whichever comes first [3].\n- Clean the grinder burrs monthly with the supplied brush [3]. If the grinder is jammed (error E07), switch the machine off, remove the beans from the hopper, and clean the burrs [1].\n\nThe sources do not say whether any of these causes watery espresso specifically. If the problem continues after a finer grind, the manual does not give further steps, so contact customer service on +49 800 555 0101 (a fictional number in the manual) [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": false,
+        "citation_precision": 0.3333333333333333,
+        "refused": null,
+        "latency_s": 8.84489966602996,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          },
+          {
+            "id": 2,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 2,
+            "snippet": "2. Daily Operation\nFilling the water tank: remove the tank at the rear and fill it with fresh, cold water up to the MAX\nmark. The tank capacity is 1.8 litres.\nHeat-up: after switching on, the machine "
+          },
+          {
+            "id": 3,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 3,
+            "snippet": "3. Cleaning and Maintenance\nDaily: empty the drip tray and rinse the portafilter and filter baskets with warm water.\nWeekly: backflush the brew group. Insert the blind filter basket with one cleaning "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "How do I get rid of limescale in the machine?",
+        "category": "vocab_mismatch",
+        "language": "en",
+        "status": "answered",
+        "answer": "To remove limescale from the AromaPro E200, run the descaling programme. Error E04 (pump blockage, usually caused by limescale) is cleared by running the descaling programme [1].\n\nSteps from the maintenance section:\n- Mix 1 litre of descaling solution at a ratio of 1:3 with water [2].\n- Run the descaling programme, which takes about 20 minutes [2].\n- Afterwards, rinse the tank and run two full tanks of fresh water through the machine [2].\n\nDescale every 3 months, or immediately when the descale light blinks [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 5.178621958999429,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          },
+          {
+            "id": 2,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 3,
+            "snippet": "3. Cleaning and Maintenance\nDaily: empty the drip tray and rinse the portafilter and filter baskets with warm water.\nWeekly: backflush the brew group. Insert the blind filter basket with one cleaning "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Der Stapler-Akku wird vom Ladegerät nicht erkannt. Was kann ich tun?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "answered",
+        "answer": "Laut Handbuch für das Staplerladegerät VoltMax LX-48 können Sie so vorgehen:\n\n1. **Fehlercode prüfen:** Der Fehler „Batterie nicht erkannt“ ist als Fehler F2 dokumentiert. Die Abhilfe lautet: Prüfen Sie den Batteriestecker und die Kontakte [2].\n2. **Anschlussreihenfolge prüfen:** Verbinden Sie zuerst den Batteriestecker mit dem Ladegerät. Das Gerät erkennt die Batteriespannung dann automatisch. Erst danach drücken Sie die Start-Taste für 2 Sekunden [1].\n3. **Kompatibilität prüfen:** Das Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah ausgelegt [1]. Passt Ihr Akku nicht zu diesen Werten, wird er möglicherweise nicht erkannt. Das ist eine Schlussfolgerung aus den Angaben, im Handbuch steht dazu nichts Ausdrückliches.\n4. **Kontakte und Stecker reinigen:** Monatlich sollen Kontakte und Stecker geprüft und gereinigt sowie alle Kabel auf Beschädigungen kontrolliert werden [6].\n5. **Sicherheit beachten:** Beim Arbeiten an der Batterie sind Schutzbrille und säurefeste Handschuhe zu tragen. Der Ladeplatz muss gut belüftet sein, da beim Laden von Blei-Säure-Batterien explosives Wasserstoffgas entstehen kann [3].\n\nWenn die Batterie nach diesen Schritten weiterhin nicht erkannt wird, lassen Sie laut Handbuch die Batterie prüfen [2]. Das Handbuch nennt für F2 keine weiteren Schritte. Die Quellen enthalten außerdem keine Angaben dazu, ob ein Lithium-Ionen-Akku anders behandelt werden müsste. Der Fehler F7 (Kommunikationsfehler mit dem Batteriemanagementsystem) betrifft nur Lithium-Ionen-Batterien [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": false,
+        "citation_precision": 0.25,
+        "refused": null,
+        "latency_s": 7.155829790979624,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          },
+          {
+            "id": 2,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          },
+          {
+            "id": 3,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 1,
+            "snippet": "VoltMax LX-48 Staplerladegerät\n1. Sicherheitshinweise\nDas Staplerladegerät VoltMax LX-48 darf nur von geschultem Personal bedient werden.\nDer Ladeplatz muss gut belüftet sein, da beim Laden von Blei-S"
+          },
+          {
+            "id": 6,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie oft muss ein Elektriker das Ladegerät überprüfen?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "answered",
+        "answer": "Eine Elektrofachkraft muss das Ladegerät einmal jährlich prüfen. Die jährliche Prüfung durch eine Elektrofachkraft nach DGUV Vorschrift 3 ist verpflichtend [3]. Die Quellen nennen keine weiteren Prüfintervalle für Elektrofachkräfte.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 6.2016957919695415,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 3,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Das Ladegerät ist sehr heiß geworden und hat sich abgeschaltet. Was tun?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "answered",
+        "answer": "Das Ladegerät hat sich vermutlich wegen Übertemperatur abgeschaltet. Laut Handbuch gehört das zum Fehler F3: Übertemperatur. Prüfen Sie Lüfter und Lüfterfilter und lassen Sie das Gerät 20 Minuten abkühlen [2].\n\nEmpfohlene Schritte:\n1. Gerät abkühlen lassen: 20 Minuten warten [2].\n2. Lüfter und Lüfterfilter prüfen. Der Lüfterfilter muss alle 6 Monate gewechselt werden, in staubiger Umgebung früher [5].\n3. Auf ausreichende Belüftung achten. Der Ladeplatz muss gut belüftet sein [4]. Die zulässige Umgebungstemperatur beträgt 0 bis 40 °C [4].\n4. Nach dem Abkühlen das Gerät erneut starten. Dazu die Start-Taste 2 Sekunden drücken [1].\n\nWenn die rote LED dauerhaft leuchtet, zeigt das eine Störung an [2]. Bleibt der Fehler bestehen, sollten Sie die Batterie und das Gerät prüfen lassen. Die jährliche Prüfung durch eine Elektrofachkraft nach DGUV Vorschrift 3 ist verpflichtend [5]. Das Gerät darf nur von geschultem Personal bedient werden [4].\n\nDie Quellen nennen keine Ursache für die Überhitzung über den Lüfter und Filter hinaus. Sie beschreiben auch nicht, wann genau eine Wiederinbetriebnahme sicher ist.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": false,
+        "citation_precision": 0.25,
+        "refused": null,
+        "latency_s": 6.707904250011779,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          },
+          {
+            "id": 2,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          },
+          {
+            "id": 4,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 1,
+            "snippet": "VoltMax LX-48 Staplerladegerät\n1. Sicherheitshinweise\nDas Staplerladegerät VoltMax LX-48 darf nur von geschultem Personal bedient werden.\nDer Ladeplatz muss gut belüftet sein, da beim Laden von Blei-S"
+          },
+          {
+            "id": 5,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Der Messfühler des Luftreinigers ist verstaubt und das Gerät zeigt eine Störung. Was soll ich tun?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "answered",
+        "answer": "Die Störung entspricht laut Handbuch dem Fehler E2: „Sensor verschmutzt“. Reinigen Sie die Sensoröffnung vorsichtig mit einem trockenen Wattestäbchen [1]. Ziehen Sie vor jeder Reinigung den Netzstecker [5]. Die Quellen enthalten keine Angaben darüber, was zu tun ist, wenn die Störung nach der Reinigung bestehen bleibt.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": false,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 6.061340374988504,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Störungen und Garantie",
+            "snippet": "Störungen und Garantie\nE1: Lüfter blockiert. Schalten Sie das Gerät aus und entfernen Sie Fremdkörper.\nE2: Sensor verschmutzt. Reinigen Sie die Sensoröffnung vorsichtig mit einem trockenen Wattestäbch"
+          },
+          {
+            "id": 5,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Sicherheit",
+            "snippet": "Sicherheit\nDer Luftreiniger ClearAir P5 ist nur für den Gebrauch in Innenräumen bestimmt. Stellen Sie das Gerät mindestens 30 cm von Wänden entfernt auf.\nBetreiben Sie das Gerät nicht in Räumen mit ho"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie verbinde ich den Luftreiniger mit meinem Smartphone?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Die Quellen enthalten nur einen Teil der Antwort. Laut Handbuch lässt sich der Luftreiniger ClearAir P5 über die ClearAir App per WLAN steuern [1]. Dabei werden nur 2,4-GHz-Netzwerke unterstützt [1]. Wie die Verbindung mit dem Smartphone im Einzelnen eingerichtet wird (Kopplung, Schritte in der App), geht aus den bereitgestellten Quellen nicht hervor. Eine Schritt-für-Schritt-Anleitung kann ich daher nicht geben. Bitte prüfen Sie dafür das vollständige Handbuch oder die Anleitung der ClearAir App.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 5.631344792025629,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What is the retail price of the AromaPro E200?",
+        "category": "unanswerable",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "The provided sources do not contain the retail price of the AromaPro E200. They are excerpts from the AromaPro E200 manual covering safety, daily operation, cleaning, and troubleshooting/warranty, and none of them mention pricing. The only warranty information given is a 24-month warranty from the date of purchase [2]. For the retail price, check with the seller or manufacturer, or consult a source that includes pricing.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 5.4718835829989985,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Can I control the espresso machine remotely through a smartphone app?",
+        "category": "unanswerable",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "The sources do not say whether the AromaPro E200 espresso machine can be controlled remotely through a smartphone app. The espresso manual excerpts cover safety, daily operation, cleaning and maintenance, and troubleshooting, and none of them mention an app, Wi-Fi, or remote control [1][2][3][4]. The only app and Wi-Fi control described in the sources belongs to a different product, the air purifier, which can be controlled over WLAN through the ClearAir app and supports only 2.4 GHz networks [5]. That information does not apply to the espresso machine. To answer this question, the espresso machine's full manual or its connectivity specifications would be needed.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 5.288692499976605,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Wie viel wiegt das Staplerladegerät VoltMax LX-48?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Die Quellen enthalten keine Angabe zum Gewicht des Staplerladegeräts VoltMax LX-48. Die Quellen beschreiben Sicherheitshinweise, Netzanschluss und Schutzart [1], Ladeprogramme und Ladezeit [2], Wartung [6] sowie Fehlerbehebung und Garantie [5]. Zum Gewicht steht dort nichts, daher kann die Frage anhand dieser Quellen nicht beantwortet werden. Eine Antwort wäre nur über das Datenblatt oder die vollständige Bedienungsanleitung des Herstellers möglich.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 7.142204916046467,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Farbe hat das Gehäuse des Ladegeräts?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Die bereitgestellten Quellen enthalten keine Angabe zur Farbe des Gehäuses des Ladegeräts. Die Quellen beschreiben lediglich, dass das Gehäuse nur mit einem trockenen oder leicht feuchten Tuch gereinigt werden darf und ein Hochdruckreiniger nicht zulässig ist [4]. Zur Gehäusefarbe kann ich daher keine Aussage machen.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 4.9565083750057966,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Was kostet ein Ersatz-HEPA-Filter für den ClearAir P5?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Die bereitgestellten Quellen enthalten keine Angaben zu den Kosten eines Ersatz-HEPA-Filters für den ClearAir P5. Sie beschreiben nur, dass der HEPA-Filter H13 alle 12 Monate gewechselt werden muss [2]. Eine Preisinformation fehlt daher vollständig.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 6.149417540989816,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Abmessungen (Höhe, Breite, Tiefe) hat der Luftreiniger?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Die bereitgestellten Quellen enthalten keine Angaben zu den Abmessungen (Höhe, Breite, Tiefe) des Luftreinigers ClearAir P5. Der Abschnitt „Technische Daten“ nennt nur die Eignung für Räume bis 45 m², den Luftdurchsatz (CADR) von 320 m³/h, die Leistungsaufnahme von 55 W sowie die Lautstärke von 24 dB im Schlafmodus und 52 dB auf Stufe 3 [2]. Eine Antwort auf die Frage nach den Abmessungen ist anhand dieser Quellen nicht möglich. Bitte konsultieren Sie das vollständige Handbuch oder das Datenblatt des Herstellers.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 6.403216499951668,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Does the air purifier support Alexa voice control?",
+        "category": "unanswerable",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "The provided sources do not say whether the air purifier supports Alexa voice control, so I can't answer that question from them. The only connectivity information is that the device can be controlled over WLAN through the ClearAir app, and that only 2.4 GHz networks are supported [1].",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 5.052454541961197,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What is the capital of France?",
+        "category": "out_of_scope",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "The provided sources do not contain information about the capital of France, so I cannot answer this question from them. The sources cover an AromaPro E200 espresso machine manual, a forklift charger manual, and an air purifier manual. Please ask a question about one of these documents.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 4.207699165970553,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Hallo! Wer bist du und wie geht es dir heute?",
+        "category": "out_of_scope",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Hallo! Die bereitgestellten Quellen enthalten keine Informationen darüber, wer ich bin oder wie es mir heute geht, daher kann ich diese Fragen nicht aus den Dokumenten beantworten. Ich kann dir aber Fragen zu den vorliegenden Handbüchern beantworten, etwa zur Fehlerbehebung und Garantie des Ladegeräts [1], zur Wartung [4], zu den Ladeprogrammen [6] oder zu Betriebsarten, Filterwechsel und Störungen des Luftreinigers [2][3][5].",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 6.097078541992232,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      }
+    ],
+    "agentic": [
+      {
+        "question": "How much water does the tank of the AromaPro E200 hold?",
+        "category": "lookup",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 94.99922225001501,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What voltage and power consumption does the espresso machine have?",
+        "category": "lookup",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 76.38901237497339,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "How long does the machine need to heat up?",
+        "category": "lookup",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 84.37665799999377,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What is the pump pressure of the machine?",
+        "category": "lookup",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 74.14853987505194,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Which error code indicates a jammed grinder?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "Error E07 indicates a jammed grinder. The manual says: \"Error E07: the grinder is jammed. Switch the machine off, remove the beans from the hopper and clean the burrs.\" [1]",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 54.30973404197721,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "How long is the warranty on the espresso machine?",
+        "category": "lookup",
+        "language": "en",
+        "status": "answered",
+        "answer": "The warranty on the espresso machine is 24 months from the date of purchase [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 45.509742000023834,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "How often should the water filter cartridge be replaced?",
+        "category": "lookup",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 77.45462004101137,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Netzspannung benötigt das Ladegerät VoltMax LX-48?",
+        "category": "lookup",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 86.80523079197155,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Wie hoch ist der maximale Ladestrom des Ladegeräts?",
+        "category": "lookup",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 94.16706291696755,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Wie lange dauert das Laden einer Batterie mit 500 Ah?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Das Laden einer Batterie mit 500 Ah dauert laut Handbuch etwa 8 Stunden, bei einer Entladungstiefe von 80 % [1]. Eine wöchentliche Ausgleichsladung dauert zusätzlich etwa 3 Stunden [1]. Als Hinweis: Fehler F5 (Ladezeitüberschreitung) wird nach 14 Stunden gemeldet; in diesem Fall soll die Batterie geprüft werden [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 49.87059395899996,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          },
+          {
+            "id": 2,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie lange beträgt die Garantie auf das Staplerladegerät?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Die Garantie auf das Staplerladegerät beträgt 36 Monate ab Kaufdatum [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 47.5072734580026,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Nach wie vielen Monaten muss der Lüfterfilter des Ladegeräts gewechselt werden?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Der Lüfterfilter des Ladegeräts muss alle 6 Monate gewechselt werden. Bei staubiger Umgebung sollte der Wechsel früher erfolgen [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 40.75390720803989,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Für welche Raumgröße ist der Luftreiniger ClearAir P5 geeignet?",
+        "category": "lookup",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 67.17845499998657,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Wie laut ist der Luftreiniger im Schlafmodus?",
+        "category": "lookup",
+        "language": "de",
+        "status": "answered",
+        "answer": "Im Schlafmodus beträgt die Lautstärke 24 dB [2]. Der Schlafmodus ist ein leiser Betrieb, bei dem die Anzeige abgedunkelt wird [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 44.64343562501017,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Betriebsarten",
+            "snippet": "Betriebsarten\nAutomatikmodus: Der Partikelsensor regelt die Lüfterstufe selbstständig nach der Luftqualität.\nSchlafmodus: leiser Betrieb, die Anzeige wird abgedunkelt. Turbomodus: maximale Leistung fü"
+          },
+          {
+            "id": 2,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Technische Daten",
+            "snippet": "Technische Daten\nGeeignet für Räume bis 45 m². Der Luftdurchsatz (CADR) beträgt 320 m³/h. Die Leistungsaufnahme beträgt 55 W.\nDie Lautstärke beträgt 24 dB im Schlafmodus und 52 dB auf Stufe 3."
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie oft muss der HEPA-Filter H13 gewechselt werden?",
+        "category": "lookup",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 82.25541812501615,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Wie lange gilt die Garantie auf den Luftreiniger?",
+        "category": "lookup",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 78.2667028750293,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What should I do before and after frothing milk, and how long until steam is ready?",
+        "category": "multi_chunk",
+        "language": "en",
+        "status": "answered",
+        "answer": "Before frothing, purge the steam wand briefly. After frothing, wipe the steam wand with a damp cloth immediately. The purge is required before and after every use [1]. For steam readiness, press the steam button and wait about 40 seconds until the steam light stays on [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 55.02764554100577,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 2,
+            "snippet": "2. Daily Operation\nFilling the water tank: remove the tank at the rear and fill it with fresh, cold water up to the MAX\nmark. The tank capacity is 1.8 litres.\nHeat-up: after switching on, the machine "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Describe the weekly and the quarterly cleaning tasks for the espresso machine.",
+        "category": "multi_chunk",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 74.79434133303585,
+        "llm_calls": 11,
+        "retries": 0,
+        "regenerations": 1,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What do errors E02 and E04 mean and how are they fixed?",
+        "category": "multi_chunk",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 73.63211633404717,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Sicherheitsvorkehrungen gelten im Ladebereich und welche Schutzausrüstung ist erforderlich?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 77.06998983299127,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Ladeprogramme bietet das Ladegerät und wie startet man den Ladevorgang?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 94.05585574998986,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Wartungsaufgaben fallen beim Ladegerät monatlich und jährlich an?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 94.50392620795174,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Filter hat der Luftreiniger und wann müssen sie gewechselt oder gereinigt werden?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "answered",
+        "answer": "Laut Quelle [1] hat der Luftreiniger folgende Filter, mit diesen Wartungsintervallen:\n\n- **HEPA-Filter H13:** muss alle 12 Monate gewechselt werden [1].\n- **Aktivkohlefilter:** muss alle 6 Monate gewechselt werden [1].\n- **Vorfilter:** soll alle 2 Wochen mit einem Staubsauger abgesaugt werden [1]. Die Quelle enthält keine Angabe dazu, ob oder wann der Vorfilter gewechselt werden muss.\n\nZur Filterwechselanzeige: Sie leuchtet nach 8000 Betriebsstunden rot [1]. Nach dem Wechsel halten Sie die Filter-Taste 5 Sekunden gedrückt, um die Anzeige zurückzusetzen [1].\n\nQuelle [2] beschreibt die Lüfterfilter-Wartung eines Ladegeräts und nicht den Luftreiniger, daher wurde sie für diese Antwort nicht verwendet [2].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 135.69897358299932,
+        "llm_calls": 25,
+        "retries": 2,
+        "regenerations": 1,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Filterwechsel",
+            "snippet": "Filterwechsel\nDer HEPA-Filter H13 muss alle 12 Monate gewechselt werden. Der Aktivkohlefilter muss alle 6 Monate gewechselt werden.\nDen Vorfilter alle 2 Wochen mit einem Staubsauger absaugen.\nDie Filt"
+          },
+          {
+            "id": 2,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Welche Betriebsarten hat der Luftreiniger und wie funktioniert der Turbomodus?",
+        "category": "multi_chunk",
+        "language": "de",
+        "status": "answered",
+        "answer": "Der Luftreiniger hat drei Betriebsarten: Automatikmodus, Schlafmodus und Turbomodus. Im Automatikmodus regelt der Partikelsensor die Lüfterstufe selbstständig nach der Luftqualität [1]. Der Schlafmodus ist leiser Betrieb, bei dem die Anzeige abgedunkelt wird [1]. Der Turbomodus liefert maximale Leistung für 30 Minuten; danach wechselt das Gerät automatisch in den Automatikmodus [1].\n\nZusätzlich lässt sich das Gerät über die ClearAir App per WLAN steuern, wobei nur 2,4-GHz-Netzwerke unterstützt werden [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 1.0,
+        "refused": null,
+        "latency_s": 51.17259329202352,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Betriebsarten",
+            "snippet": "Betriebsarten\nAutomatikmodus: Der Partikelsensor regelt die Lüfterstufe selbstständig nach der Luftqualität.\nSchlafmodus: leiser Betrieb, die Anzeige wird abgedunkelt. Turbomodus: maximale Leistung fü"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "What does the LED on the forklift charger show when charging is complete?",
+        "category": "cross_lingual",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 67.03686329198536,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "How do I reset the filter change indicator on the air purifier?",
+        "category": "cross_lingual",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 68.34785304201068,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "The coffee maker shut itself off because it got too hot. What now?",
+        "category": "vocab_mismatch",
+        "language": "en",
+        "status": "answered",
+        "answer": "If the machine shut itself off from overheating, the manual describes this as error E02: overheating protection (thermal fuse) triggered. The fix is to unplug the machine and let it cool down for 30 minutes before restarting [1]. The manual's safety section also says the ambient temperature during operation must not exceed 35 degrees Celsius, and that the steam wand and brew group become very hot, so don't touch them during use [2]. The sources are for the AromaPro E200 espresso machine. They don't say what to do if the overheating happens again, so if it recurs, check with the manufacturer's customer service (the manual lists +49 800 555 0101 [1]).",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": false,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 52.49870387499686,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          },
+          {
+            "id": 2,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 1,
+            "snippet": "AromaPro E200 Espresso Machine\n1. Safety Instructions\nRead this manual before using the AromaPro E200 espresso machine. Keep it for future reference.\nOperate the machine only on a stable, level, heat-"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "My espresso tastes watery. How can I fix it?",
+        "category": "vocab_mismatch",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "The sources do not describe \"watery\" espresso specifically. The closest match is the troubleshooting entry for coffee that tastes too weak, and its only fix is to select a finer grind. The grinder has settings 1 to 12, where 1 is the finest, and the factory default is 5 [1]. Try a finer setting, then check the result.\n\nThe manual also gives the intended amounts: 8 g of ground coffee for a single shot (30 ml) and 16 g for a double shot (60 ml) [2]. Checking that your dose matches these amounts is a reasonable step, but the sources do not say that dose changes fix watery coffee.\n\nThe sources do not link watery taste to descaling, the water filter, or other maintenance. Descaling is due every 3 months or when the descale light blinks [3], and limescale can cause a pump blockage (error E04) [1]. If the machine shows these signs, follow the maintenance steps in the manual [1][3]. For a specific cause of watery taste, consult customer service or the full manual.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 38.342714166035876,
+        "llm_calls": 8,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "How do I get rid of limescale in the machine?",
+        "category": "vocab_mismatch",
+        "language": "en",
+        "status": "answered",
+        "answer": "To remove limescale, run the machine's descaling programme. Descale every 3 months, or immediately when the descale light blinks [2]. Mix 1 litre of descaling solution at a ratio of 1:3 with water [2]. The programme takes about 20 minutes [2]. Afterwards, rinse the tank and run two full tanks of fresh water through the machine [2].\n\nLimescale can also cause error E04 (pump blockage). The fix for that error is the same: run the descaling programme [1].",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 38.915270791971125,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          },
+          {
+            "id": 2,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 3,
+            "snippet": "3. Cleaning and Maintenance\nDaily: empty the drip tray and rinse the portafilter and filter baskets with warm water.\nWeekly: backflush the brew group. Insert the blind filter basket with one cleaning "
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Der Stapler-Akku wird vom Ladegerät nicht erkannt. Was kann ich tun?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Die Quellen beschreiben für diesen Fall nur einen Teil der Schritte:\n\n- Bei der Fehlermeldung F2 „Batterie nicht erkannt“ empfiehlt das Handbuch, den Batteriestecker und die Kontakte zu prüfen [2].\n- Laut Wartungsabschnitt sind Kontakte und Stecker monatlich zu prüfen und zu reinigen und alle Kabel auf Beschädigungen zu kontrollieren [3].\n- Im Abschnitt zur Inbetriebnahme steht: Verbinden Sie zuerst den Batteriestecker mit dem Ladegerät. Das Gerät erkennt die Batteriespannung dann automatisch [1]. Die Quelle nennt diesen Schritt jedoch nicht als Abhilfe für F2.\n\nDie Quellen enthalten keine Angaben dazu, was zu tun ist, wenn die Batterie nach diesen Prüfungen weiterhin nicht erkannt wird.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 64.96138724999037,
+        "llm_calls": 10,
+        "retries": 0,
+        "regenerations": 1,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Wie oft muss ein Elektriker das Ladegerät überprüfen?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 56.350115832989104,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Das Ladegerät ist sehr heiß geworden und hat sich abgeschaltet. Was tun?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "answered",
+        "answer": "Die Quellen beschreiben für eine Übertemperatur den Fehler F3: Prüfen Sie Lüfter und Lüfterfilter und lassen Sie das Gerät 20 Minuten abkühlen [1]. Der Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebung früher [4]. Die zulässige Umgebungstemperatur beträgt 0 bis 40 °C [3]. Eine dauerhaft leuchtende rote LED zeigt eine Störung an [1].\n\nHinweis: Die Quellen belegen nicht, dass Ihr Abschalten genau durch F3 ausgelöst wurde. Prüfen Sie, ob eine Fehlermeldung angezeigt wird. Was zu tun ist, wenn das Problem nach dem Abkühlen und der Lüfterprüfung bestehen bleibt, steht in den Quellen nicht.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.3333333333333333,
+        "refused": null,
+        "latency_s": 44.30721245898167,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          },
+          {
+            "id": 3,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 1,
+            "snippet": "VoltMax LX-48 Staplerladegerät\n1. Sicherheitshinweise\nDas Staplerladegerät VoltMax LX-48 darf nur von geschultem Personal bedient werden.\nDer Ladeplatz muss gut belüftet sein, da beim Laden von Blei-S"
+          },
+          {
+            "id": 4,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 3,
+            "snippet": "3. Wartung und Pflege\nMonatlich: Kontakte und Stecker prüfen und reinigen sowie alle Kabel auf Beschädigungen\nkontrollieren.\nDer Lüfterfilter muss alle 6 Monate gewechselt werden, bei staubiger Umgebu"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Der Messfühler des Luftreinigers ist verstaubt und das Gerät zeigt eine Störung. Was soll ich tun?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "answered",
+        "answer": "Laut Handbuch gehen Sie so vor:\n\n1. Ziehen Sie vor jeder Reinigung den Netzstecker des Luftreinigers. [2]\n2. Reinigen Sie die Sensoröffnung vorsichtig mit einem trockenen Wattestäbchen. [1]\n\nDie Störung passt zum Fehler „E2: Sensor verschmutzt“. [1] Ich gehe davon aus, dass der im Handbuch genannte „Sensor“ dem von Ihnen beschriebenen Messfühler entspricht. Die Quellen beschreiben für diesen Fehler keine weiteren Schritte. Falls der Fehler nach der Reinigung bestehen bleibt, enthalten die vorliegenden Quellen dazu keine Angaben.",
+        "retrieval_hit": true,
+        "correct": true,
+        "grounded": true,
+        "citation_precision": 0.5,
+        "refused": null,
+        "latency_s": 48.61121841700515,
+        "llm_calls": 9,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Störungen und Garantie",
+            "snippet": "Störungen und Garantie\nE1: Lüfter blockiert. Schalten Sie das Gerät aus und entfernen Sie Fremdkörper.\nE2: Sensor verschmutzt. Reinigen Sie die Sensoröffnung vorsichtig mit einem trockenen Wattestäbch"
+          },
+          {
+            "id": 2,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Sicherheit",
+            "snippet": "Sicherheit\nDer Luftreiniger ClearAir P5 ist nur für den Gebrauch in Innenräumen bestimmt. Stellen Sie das Gerät mindestens 30 cm von Wänden entfernt auf.\nBetreiben Sie das Gerät nicht in Räumen mit ho"
+          }
+        ],
+        "error": ""
+      },
+      {
+        "question": "Wie verbinde ich den Luftreiniger mit meinem Smartphone?",
+        "category": "vocab_mismatch",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": true,
+        "correct": false,
+        "grounded": null,
+        "citation_precision": 0.0,
+        "refused": null,
+        "latency_s": 88.2910692919977,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What is the retail price of the AromaPro E200?",
+        "category": "unanswerable",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 53.919568124983925,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Can I control the espresso machine remotely through a smartphone app?",
+        "category": "unanswerable",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 93.59443916700548,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Wie viel wiegt das Staplerladegerät VoltMax LX-48?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 87.56221912498586,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Farbe hat das Gehäuse des Ladegeräts?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 75.25874137500068,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Was kostet ein Ersatz-HEPA-Filter für den ClearAir P5?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 78.98201770801097,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Welche Abmessungen (Höhe, Breite, Tiefe) hat der Luftreiniger?",
+        "category": "unanswerable",
+        "language": "de",
+        "status": "insufficient",
+        "answer": "Dazu habe ich in der Dokumentation keine ausreichenden Informationen gefunden.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 90.54489354102407,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Does the air purifier support Alexa voice control?",
+        "category": "unanswerable",
+        "language": "en",
+        "status": "insufficient",
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 75.91271458397387,
+        "llm_calls": 21,
+        "retries": 2,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "What is the capital of France?",
+        "category": "out_of_scope",
+        "language": "en",
+        "status": "out_of_scope",
+        "answer": "I only answer questions about the technical documentation. How can I help with that?",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 2.827819791971706,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      },
+      {
+        "question": "Hallo! Wer bist du und wie geht es dir heute?",
+        "category": "out_of_scope",
+        "language": "de",
+        "status": "out_of_scope",
+        "answer": "Ich beantworte nur Fragen zur technischen Dokumentation. Wie kann ich dabei helfen?",
+        "retrieval_hit": null,
+        "correct": null,
+        "grounded": null,
+        "citation_precision": null,
+        "refused": true,
+        "latency_s": 3.7011765830102377,
+        "llm_calls": 1,
+        "retries": 0,
+        "regenerations": 0,
+        "cited": [],
+        "error": ""
+      }
+    ]
+  }
+}
