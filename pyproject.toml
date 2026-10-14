@@ -1,0 +1,66 @@
+[project]
+name = "docrag"
+version = "0.1.0"
+description = "Agentic RAG over technical documentation (LangGraph), with naive-vs-agentic evaluation"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=0.2",
+    "langchain>=0.3",
+    "langchain-core>=0.3",
+    "langchain-text-splitters>=0.3",
+    "langchain-anthropic>=0.3",
+    "langchain-openai>=0.3",   # also serves OpenRouter via its OpenAI-compatible endpoint
+    "langchain-huggingface>=0.1",
+    "langchain-chroma>=0.2",
+    "sentence-transformers>=3.0",
+    "pypdf>=4.0",
+    "python-docx>=1.1",
+    "langdetect>=1.0.9",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "python-multipart>=0.0.9",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "httpx>=0.27",
+    "reportlab>=4.0",      # only used by scripts/make_samples.py to generate sample PDFs
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+docrag = ["static/*"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+asyncio_mode = "auto"
+markers = ["live: tests that call a real LLM (skipped by default)"]
+addopts = "-m 'not live'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "eval"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_unused_ignores = false

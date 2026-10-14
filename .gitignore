@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.egg-info/
+.env
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+data/chroma/
+data/raw/*
+!data/raw/.gitkeep
+eval/results/*
+!eval/results/latest.md
+!eval/results/.gitkeep
+.claude/
+CLAUDE.md
+.DS_Store
