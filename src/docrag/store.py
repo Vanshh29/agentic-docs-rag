@@ -1,0 +1,75 @@
+"""Vector store interface with a Chroma implementation (swap for Qdrant/pgvector later)."""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from typing import Any, Protocol
+
+from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
+
+from docrag.config import Settings, get_settings
+
+
+class VectorStore(Protocol):
+    def add_documents(self, docs: list[Document], ids: list[str]) -> None: ...
+    def search(self, query: str, k: int, mmr: bool = False) -> list[Document]: ...
+    def count(self) -> int: ...
+    def delete_by_source(self, source_file: str, keep_ids: Sequence[str] = ()) -> None: ...
+    def list_sources(self) -> list[str]: ...
+    def count_by_source(self) -> dict[str, int]: ...
+    def reset(self) -> None: ...
+
+
+class ChromaStore:
+    def __init__(self, embeddings: Embeddings, settings: Settings | None = None) -> None:
+        self._s = settings or get_settings()
+        self._embeddings = embeddings
+        self._db = self._open()
+
+    def _open(self) -> Any:
+        from langchain_chroma import Chroma
+
+        return Chroma(
+            collection_name=self._s.collection_name,
+            embedding_function=self._embeddings,
+            persist_directory=str(self._s.chroma_dir),
+            collection_metadata={"hnsw:space": "cosine"},
+        )
+
+    def add_documents(self, docs: list[Document], ids: list[str]) -> None:
+        # Deterministic ids + upsert semantics make re-ingestion idempotent.
+        if docs:
+            self._db.add_documents(docs, ids=ids)
+
+    def search(self, query: str, k: int, mmr: bool = False) -> list[Document]:
+        if mmr:
+            return list(self._db.max_marginal_relevance_search(query, k=k, fetch_k=max(20, k * 3)))
+        return list(self._db.similarity_search(query, k=k))
+
+    def count(self) -> int:
+        return int(self._db._collection.count())
+
+    def delete_by_source(self, source_file: str, keep_ids: Sequence[str] = ()) -> None:
+        """Delete this file's chunks except those whose ids are in `keep_ids`."""
+        existing = self._db._collection.get(where={"source_file": source_file}, include=[])["ids"]
+        stale = [i for i in existing if i not in set(keep_ids)]
+        if stale:
+            self._db._collection.delete(ids=stale)
+
+    def list_sources(self) -> list[str]:
+        metas = self._db._collection.get(include=["metadatas"])["metadatas"] or []
+        return sorted({str(m["source_file"]) for m in metas if m and "source_file" in m})
+
+    def count_by_source(self) -> dict[str, int]:
+        metas = self._db._collection.get(include=["metadatas"])["metadatas"] or []
+        counts: dict[str, int] = {}
+        for m in metas:
+            if m and "source_file" in m:
+                name = str(m["source_file"])
+                counts[name] = counts.get(name, 0) + 1
+        return dict(sorted(counts.items()))
+
+    def reset(self) -> None:
+        self._db.delete_collection()
+        self._db = self._open()
