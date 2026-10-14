@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Docs Assistant</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232349c9'/%3E%3Cpath d='M10 8h8a4 4 0 0 1 4 4v12h-8a4 4 0 0 1-4-4V8z' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M14 14h5M14 18h3' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  /* ---------- design tokens ---------- */
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1c2330; --muted: #4b5565; --line: #d9dde5;
+    --accent: #2349c9; --accent-soft: #e6ecfd; --on-accent: #ffffff;
+    --ok: #0f6b3c; --ok-soft: #e1f4e9; --warn: #8a4a05; --warn-soft: #fdf1d9;
+    --err: #a4262c; --err-soft: #fdeaea; --focus: #1d4ed8;
+    --fs-xs: .8125rem; --fs-sm: .875rem; --fs-md: 1rem; --fs-lg: 1.125rem; --fs-xl: 1.375rem;
+    --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s5: 48px;
+    --r: 14px; --touch: 44px; --measure: 70ch;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --shadow: 0 1px 2px rgba(16, 24, 40, .06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1218; --card: #181c25; --text: #e8ebf1; --muted: #a3acbd; --line: #2d3446;
+      --accent: #8aa2ff; --accent-soft: #232c4a; --on-accent: #0b1020;
+      --ok: #4ade80; --ok-soft: #12301f; --warn: #fbbf24; --warn-soft: #33270b;
+      --err: #ff8a8f; --err-soft: #3a1618; --focus: #9db1ff; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1218; --card: #181c25; --text: #e8ebf1; --muted: #a3acbd; --line: #2d3446;
+    --accent: #8aa2ff; --accent-soft: #232c4a; --on-accent: #0b1020;
+    --ok: #4ade80; --ok-soft: #12301f; --warn: #fbbf24; --warn-soft: #33270b;
+    --err: #ff8a8f; --err-soft: #3a1618; --focus: #9db1ff; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; color-scheme: light dark; }
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: var(--fs-md)/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  button, textarea, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+             clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  svg.i { width: 1.1em; height: 1.1em; flex: none; stroke: currentColor; fill: none; stroke-width: 2;
+          stroke-linecap: round; stroke-linejoin: round; vertical-align: -.15em; }
+  .wrap { max-width: 820px; margin: 0 auto; padding-inline: var(--s2); }
+
+  /* ---------- top bar ---------- */
+  .top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 92%, transparent);
+         backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: var(--s1); min-height: 56px; }
+  .brand { white-space: nowrap; display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: var(--fs-md); margin: 0; }
+  .brand svg { width: 28px; height: 28px; color: var(--accent); }
+  .spacer { flex: 1; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); padding: 4px 10px;
+          border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--muted);
+          max-width: 40vw; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+  .pill.ready::before { background: var(--ok); } .pill.warn::before { background: var(--warn); }
+  .pill.bad::before { background: var(--err); }
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+              min-width: var(--touch); min-height: var(--touch); border: 1px solid transparent;
+              background: transparent; border-radius: 10px; padding: 0 10px; }
+  .icon-btn:hover { background: var(--accent-soft); }
+  .theme-moon { display: none; }
+  :root[data-theme="dark"] .theme-sun { display: none; } :root[data-theme="dark"] .theme-moon { display: inline; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-sun { display: none; }
+    :root:not([data-theme="light"]) .theme-moon { display: inline; }
+  }
+
+  /* ---------- layout ---------- */
+  main { max-width: 820px; margin: 0 auto; padding: var(--s2) var(--s2) 200px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: var(--touch);
+         padding: 0 var(--s2); border-radius: 10px; border: 1px solid var(--line); background: var(--card);
+         color: var(--text); }
+  .btn:hover:not(:disabled) { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  .btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn.sm { min-height: var(--touch); font-size: var(--fs-sm); padding: 0 12px; }
+
+  /* welcome / upload */
+  @media (max-width: 480px) { #docsBtn span { display: none; } .top .wrap { gap: 2px; } .icon-btn { padding: 0 6px; } .brand { gap: 6px; font-size: var(--fs-sm); } .pill { max-width: none; } }
+  .welcome h2 { font-size: var(--fs-xl); margin: var(--s3) 0 4px; }
+  .welcome p { color: var(--muted); margin: 0 0 var(--s2); max-width: var(--measure); }
+  .examples { display: grid; gap: var(--s1); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .ex { text-align: left; min-height: var(--touch); padding: 10px 14px; border-radius: 12px;
+        border: 1px solid var(--line); background: var(--card); box-shadow: var(--shadow); }
+  .ex:hover { border-color: var(--accent); }
+  .ex small { display: block; color: var(--muted); font-size: var(--fs-xs); font-family: var(--mono); }
+  .linkbtn { border: 0; background: none; color: var(--accent); text-decoration: underline; padding: 0 4px;
+             min-height: var(--touch); font-size: var(--fs-sm); }
+  dialog.docs { width: min(560px, calc(100vw - 2 * var(--s2))); max-height: calc(100dvh - 2 * var(--s2)); overflow: auto;
+                margin: auto; padding: 0; border: 1px solid var(--line); border-radius: var(--r);
+                background: var(--card); color: var(--text); box-shadow: 0 12px 40px rgba(0, 0, 0, .3); }
+  dialog.docs::backdrop { background: rgba(10, 14, 22, .55); }
+  .dlg-head { display: flex; align-items: center; gap: var(--s1); padding: var(--s1) var(--s1) 0 var(--s2); }
+  .dlg-head h2 { flex: 1; margin: 0; font-size: var(--fs-lg); }
+  .dlg-body { padding: var(--s1) var(--s2) var(--s2); display: grid; gap: var(--s2); }
+  .dlg-body h3 { margin: 0 0 var(--s1); font-size: var(--fs-md); }
+  .doclist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .doclist li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1); padding: 6px 10px;
+                border: 1px solid var(--line); border-radius: 8px; font-size: var(--fs-sm); }
+  .doclist .nm { flex: 1 1 140px; min-width: 0; overflow-wrap: anywhere; font-family: var(--mono); }
+  .doclist .ct { color: var(--muted); font-size: var(--fs-xs); white-space: nowrap; }
+  .doclist .confirm { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1);
+                      background: var(--err-soft); color: var(--err); border-radius: 8px; padding: 8px 10px; }
+  .doclist .confirm span { flex: 1 1 200px; overflow-wrap: anywhere; }
+  .btn.danger { background: var(--err); border-color: var(--err); color: var(--card); font-weight: 600; }
+  #docmsg { font-size: var(--fs-sm); color: var(--muted); margin: 0; }
+  #docmsg.bad { color: var(--err); }
+  .drop { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
+          border: 2px dashed var(--line); border-radius: 12px; padding: var(--s3) var(--s2); cursor: pointer;
+          color: var(--muted); }
+  .drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+  .drop svg { width: 28px; height: 28px; color: var(--accent); }
+  .files { list-style: none; margin: var(--s1) 0 0; padding: 0; display: grid; gap: 6px; }
+  .files li { display: flex; align-items: center; gap: var(--s1); font-size: var(--fs-sm); padding: 6px 10px;
+              border: 1px solid var(--line); border-radius: 8px; }
+  .files .nm { flex: 1; min-width: 0; overflow-wrap: anywhere; font-family: var(--mono); }
+  .st { font-size: var(--fs-xs); padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+  .st.done { background: var(--ok-soft); color: var(--ok); } .st.failed { background: var(--err-soft); color: var(--err); }
+  .upactions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1); margin-top: var(--s1); }
+  #upmsg { font-size: var(--fs-sm); color: var(--muted); }
+
+  /* ---------- conversation ---------- */
+  .turn { margin: var(--s3) 0; scroll-margin-bottom: 170px; scroll-margin-top: 70px; }
+  .qbubble { margin-left: auto; width: fit-content; max-width: min(85%, var(--measure)); background: var(--accent);
+             color: var(--on-accent); padding: 10px 16px; border-radius: 18px 18px 4px 18px; white-space: pre-wrap;
+             overflow-wrap: anywhere; }
+  .acard { margin-top: var(--s1); width: 100%; background: var(--card); border: 1px solid var(--line);
+           border-radius: var(--r); padding: var(--s2); box-shadow: var(--shadow); }
+  .abody { max-width: var(--measure); white-space: pre-wrap; overflow-wrap: anywhere; }
+  /* 22px visible pill; padding (painted transparent via content-box) makes the hit target 28px+ without growing the line */
+  .cite-ref { display: inline-block; box-sizing: content-box; min-width: 22px; height: 22px; line-height: 22px; padding: 3px;
+              margin: -3px 0; border-radius: 14px; border: 0; background: var(--accent-soft); background-clip: content-box;
+              color: var(--accent); font-size: var(--fs-xs); font-weight: 700; text-align: center; vertical-align: 1px; }
+  .cite-ref:hover { background-color: var(--accent); color: var(--on-accent); }
+  .cite-ref.plain { cursor: default; }
+
+  /* progress */
+  .prog { list-style: none; margin: 0 0 var(--s1); padding: 0; display: grid; gap: 6px; font-size: var(--fs-sm); color: var(--muted); }
+  .prog li { display: flex; align-items: center; gap: 8px; }
+  .prog .ok { color: var(--ok); }
+  .spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--accent);
+          animation: spin .8s linear infinite; flex: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .skel { display: grid; gap: 10px; margin: var(--s1) 0; }
+  .skel i { display: block; height: 12px; border-radius: 6px; background: linear-gradient(90deg, var(--line), var(--accent-soft), var(--line));
+            background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+  .skel i:nth-child(1) { width: 92%; } .skel i:nth-child(2) { width: 78%; } .skel i:nth-child(3) { width: 55%; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  details.reason { margin-top: var(--s2); font-size: var(--fs-sm); }
+  details.reason > summary { cursor: pointer; color: var(--muted); min-height: var(--touch); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tag { font-size: var(--fs-xs); padding: 1px 8px; border-radius: 999px; background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+  details.reason .prog { margin: var(--s1) 0 0; }
+
+  /* callouts, footer */
+  .callout { display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; margin-bottom: var(--s1); max-width: var(--measure); }
+  .callout.info { background: var(--warn-soft); color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
+  .callout.note { background: var(--card); color: var(--text); border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .callout.note .msg b { margin-bottom: 4px; }
+  .callout .subline { display: block; color: var(--muted); font-size: var(--fs-sm); margin-top: 4px; font-weight: 400; }
+  .callout.info .subline { color: inherit; opacity: .85; }
+  .callout.note .manuals { display: block; color: var(--muted); font-size: var(--fs-sm); margin-top: 4px; }
+  .callout.note .examples { flex: 1 1 100%; margin-top: 4px; }
+  .callout.err { background: var(--err-soft); color: var(--err); border: 1px solid color-mix(in srgb, var(--err) 40%, transparent); align-items: flex-start; }
+  .callout { flex-wrap: wrap; }
+  .callout .msg { flex: 1 1 60%; min-width: 0; overflow-wrap: anywhere; }
+  .callout .msg b { display: block; }
+  .foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1); margin-top: var(--s2); }
+  .chipf { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-xs); padding: 4px 10px; border-radius: 999px;
+           border: 1px solid var(--line); color: var(--muted); }
+  .chipf.quiet { border-color: transparent; padding-inline: 4px; cursor: help; }
+  .chipf.ok { background: var(--ok-soft); color: var(--ok); border-color: transparent; font-weight: 600; }
+  .foot .push { margin-left: auto; }
+
+  /* sources */
+  details.sources { margin-top: var(--s2); border-top: 1px solid var(--line); padding-top: var(--s1); }
+  details.sources > summary { cursor: pointer; font-weight: 600; min-height: var(--touch); display: flex; align-items: center; overflow-wrap: anywhere; }
+  .src { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border-radius: 10px; border: 1px solid transparent; }
+  .src.hl { border-color: var(--accent); background: var(--accent-soft); }
+  .src .col { flex: 1; min-width: 0; display: grid; gap: 4px; justify-items: start; }
+  .src .n { margin-top: 2px; }
+  .badge { font-family: var(--mono); font-size: var(--fs-xs); padding: 2px 8px; border-radius: 6px; background: var(--accent-soft);
+           color: var(--accent); text-decoration: none; display: inline-block; overflow-wrap: anywhere; }
+  a.badge:hover { text-decoration: underline; }
+  .snip { color: var(--muted); font-size: var(--fs-sm); margin: 0; display: -webkit-box; -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+  .snip.open { display: block; }
+  .more { justify-self: start; border: 0; background: none; color: var(--accent); padding: 4px 0; min-height: var(--touch); font-size: var(--fs-sm); text-decoration: underline; }
+
+  /* composer */
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px solid var(--line);
+         padding: 12px var(--s2) calc(12px + env(safe-area-inset-bottom)); z-index: 10; }
+  .bar form { max-width: 820px; margin: 0 auto; display: flex; gap: var(--s1); align-items: flex-end; }
+  textarea { flex: 1; resize: none; min-height: var(--touch); max-height: 160px; padding: 10px 14px; line-height: 1.4;
+             border-radius: 12px; border: 1px solid var(--line); background: var(--card); }
+  textarea::placeholder { color: var(--muted); }
+  .bar .btn { min-width: 76px; }
+  .qline { max-width: 820px; margin: 4px auto 0; display: flex; gap: var(--s1); justify-content: space-between; font-size: var(--fs-xs); color: var(--muted); }
+  .qline:has(#qmsg:empty):has(#qcount:empty) { display: none; }
+  #qmsg { margin: 0; flex: 1; min-width: 0; }
+  #qmsg.bad { color: var(--err); }
+  #qcount { white-space: nowrap; margin-left: auto; font-variant-numeric: tabular-nums; }
+  #qcount.max { color: var(--err); font-weight: 600; }
+  .hint { max-width: 820px; margin: 4px auto 0; font-size: var(--fs-xs); color: var(--muted); }
+  @media (max-width: 480px) { .hint { display: none; } main { padding-bottom: 160px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+    .spin { border-top-color: var(--accent); border-right-color: var(--accent); }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1 class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect x="3" y="3" width="26" height="26" rx="7" fill="currentColor" opacity=".14"/><path d="M9 8h9a4 4 0 0 1 4 4v12H13a4 4 0 0 1-4-4V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13 14h5M13 18h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Docs Assistant
+    </h1>
+    <span class="spacer"></span>
+    <button type="button" class="icon-btn" id="docsBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="docsDlg" aria-label="Documents" title="Documents">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+      <span>Documents</span>
+    </button>
+    <span id="status" class="pill" role="status">Checking index…</span>
+    <button type="button" class="icon-btn" id="theme" aria-label="Toggle light or dark theme" title="Toggle theme">
+      <svg class="i theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="i theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="welcome" id="welcome">
+    <h2>Ask your technical manuals</h2>
+    <p>Questions in English or German. Every answer cites the pages it came from, and says so when the documents do not cover it.</p>
+    <div class="examples" id="examples"></div>
+
+    <p class="addhint">Using your own manuals?
+      <button type="button" class="linkbtn" id="docsLink" aria-haspopup="dialog" aria-controls="docsDlg">Add or manage documents</button></p>
+  </section>
+  <div id="chat" aria-live="polite" aria-relevant="additions"></div>
+</main>
+
+<dialog class="docs" id="docsDlg" aria-labelledby="docsTitle">
+  <div class="dlg-head">
+    <h2 id="docsTitle">Documents</h2>
+    <button type="button" class="icon-btn" id="docsClose" aria-label="Close documents panel">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="dlg-body">
+    <section aria-labelledby="idxTitle">
+      <h3 id="idxTitle">Indexed documents</h3>
+      <ul class="doclist" id="doclist" aria-label="Indexed documents"></ul>
+      <p id="docmsg" role="status" aria-live="polite"></p>
+    </section>
+    <section aria-labelledby="addTitle">
+      <h3 id="addTitle">Add documents (PDF or Word)</h3>
+      <div class="drop" id="drop" role="button" tabindex="0" aria-describedby="dropHint">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
+        <strong>Drop files here or click to browse</strong>
+        <span id="dropHint">.pdf and .docx</span>
+      </div>
+      <input type="file" id="file" accept=".pdf,.docx" multiple class="sr-only" tabindex="-1" aria-label="Choose PDF or Word files to index">
+      <ul class="files" id="files" aria-label="Files to upload"></ul>
+      <div class="upactions">
+        <button type="button" class="btn primary" id="up" disabled>Upload &amp; index</button>
+        <span id="upmsg" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+  </div>
+</dialog>
+
+<div class="bar">
+  <form id="form">
+    <label for="q" class="sr-only">Your question</label>
+    <textarea id="q" rows="1" maxlength="2000" aria-describedby="qmsg qcount" placeholder="Ask about your documents…" autocomplete="off" autofocus></textarea>
+    <button type="submit" class="btn primary" id="send">Ask</button>
+    <button type="button" class="btn" id="stop" hidden>
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="fill:currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>Stop
+    </button>
+  </form>
+  <div class="qline"><p id="qmsg" role="status" aria-live="polite"></p><span id="qcount"></span></div>
+  <div class="hint">Enter to send, Shift+Enter for a new line</div>
+</div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const NODE_LABEL = {
+  route_question: "Understanding question", retrieve: "Searching documents",
+  grade_documents: "Checking relevance", rewrite_query: "Rephrasing search",
+  generate: "Writing answer", check_hallucination: "Fact-checking",
+  format_answer: "Adding sources", respond_insufficient_info: "Not enough information",
+  respond_out_of_scope: "Out of scope",
+};
+// Static examples; each is answerable from data/samples (see eval/dataset.jsonl).
+const EXAMPLES = [
+  ["en", "How long does the machine need to heat up?", "espresso_machine_manual_en.pdf"],
+  ["en", "My espresso tastes watery. How can I fix it?", "espresso_machine_manual_en.pdf"],
+  ["de", "Wie lange dauert das Laden einer Batterie mit 500 Ah?", "forklift_charger_manual_de.pdf"],
+  ["de", "Wie oft muss der HEPA-Filter H13 gewechselt werden?", "air_purifier_manual_de.docx"],
+];
+const ICON = {
+  check: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  info: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+  alert: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2L12 3zM12 10v5M12 18h.01"/></svg>',
+  copy: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>',
+  retry: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>',
+};
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function icon(name) { const s = el("span"); s.style.display = "contents"; s.innerHTML = ICON[name]; return s.firstChild; } // static strings only
+const lsGet = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } };
+
+/* ---------- theme ---------- */
+(() => { const t = lsGet("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; })();
+$("theme").onclick = () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  lsSet("theme", root.dataset.theme);
+};
+
+/* ---------- empty state ---------- */
+EXAMPLES.forEach(([lang, text, src]) => {
+  const b = el("button", "ex"); b.type = "button";
+  b.append(el("span", "", text), el("small", "", lang.toUpperCase() + " · " + src));
+  b.onclick = () => ask(text);
+  $("examples").appendChild(b);
+});
+
+let knownSources = []; // indexed manuals from /status; used by the out-of-scope hint
+async function refreshStatus() {
+  const s = $("status");
+  try {
+    const r = await fetch("/status");
+    if (!r.ok) throw new Error(String(r.status));
+    const j = await r.json();
+    knownSources = Array.isArray(j.sources) ? j.sources.filter((x) => typeof x === "string") : [];
+    s.className = "pill " + (j.chunks > 0 ? "ready" : "warn");
+    s.textContent = j.chunks > 0 ? `Ready · ${j.chunks}` : "No documents";
+    s.setAttribute("aria-label", j.chunks > 0 ? `Ready, ${j.chunks} chunks indexed` : "No documents indexed");
+    s.title = `${j.chunks} chunks indexed · model: ${j.model}`;
+  } catch { s.className = "pill bad"; s.textContent = "Offline"; s.title = "Server not reachable"; s.removeAttribute("aria-label"); }
+}
+
+/* ---------- error helpers ---------- */
+const BUSY_TEXT = "The AI provider is unavailable or has reached its usage limit. Please try again later.";
+const CODE_TEXT = {
+  provider_unavailable: BUSY_TEXT,
+  rate_limited: "The AI provider is receiving too many requests or has reached its usage limit. Please try again later.",
+  timeout: "The request took too long. Please try again.",
+  internal: "Something went wrong on the server. Please try again.",
+  question_too_long: "That question is too long (maximum 2000 characters). Please shorten it.",
+  question_empty: "Please type a question first.",
+};
+const VALIDATION_CODES = new Set(["question_too_long", "question_empty"]);
+class ApiError extends Error {
+  constructor(message, { code = null, status = 0 } = {}) {
+    super(message); this.code = code; this.status = status;
+    // Validation problems are the user's to fix: never retryable. Unknown codes on a 4xx are treated the same.
+    this.validation = VALIDATION_CODES.has(code) || (!code && (status === 400 || status === 422));
+    this.retryable = !this.validation;
+  }
+}
+function detailText(d) {
+  if (typeof d === "string") return d;
+  if (Array.isArray(d)) return d.map((x) => (x && x.msg) || JSON.stringify(x)).join("; ");
+  return d ? JSON.stringify(d) : "";
+}
+/** Friendly text for a server error code; with a code we never surface the raw detail. */
+function codeText(code) { return code && CODE_TEXT[code] ? CODE_TEXT[code] : null; }
+async function httpError(res) {
+  let body = null;
+  try { body = await res.json(); } catch { /* not JSON */ }
+  const code = body && typeof body.code === "string" ? body.code : null;
+  let msg = codeText(code);
+  if (!msg && code) msg = CODE_TEXT.internal; // unknown future code: stay generic, do not leak detail
+  if (!msg && body) msg = detailText(body.detail); // older server (no code): previous behaviour
+  return new ApiError(msg || `Server error ${res.status}`, { code, status: res.status });
+}
+
+/* ---------- ask / stream ---------- */
+const q = $("q"); let controller = null; let busy = false;
+const MAX_Q = 2000, COUNT_AT = 1800; let qmsgTimer = null;
+function qMsg(text, bad) {
+  clearTimeout(qmsgTimer);
+  $("qmsg").textContent = text; $("qmsg").className = bad ? "bad" : "";
+  if (text) qmsgTimer = setTimeout(() => { $("qmsg").textContent = ""; $("qmsg").className = ""; }, 6000);
+}
+function updateCount() {
+  const n = q.value.length, c = $("qcount");
+  c.textContent = n >= COUNT_AT ? `${n} / ${MAX_Q}` : "";
+  c.className = n >= MAX_Q ? "max" : "";
+}
+function autosize() { q.style.height = "auto"; q.style.height = Math.min(q.scrollHeight, 160) + "px"; }
+q.addEventListener("input", () => { autosize(); updateCount(); if ($("qmsg").className === "bad" || $("qmsg").textContent) qMsg(""); });
+q.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("form").requestSubmit(); }
+});
+$("form").onsubmit = (ev) => {
+  ev.preventDefault();
+  const t = q.value.trim();
+  if (busy) { qMsg("Still working. Press Stop to cancel."); return; }
+  if (!t) { qMsg("Please type a question first."); return; }
+  ask(t); // the draft stays in the box until the server accepts the request
+};
+$("stop").onclick = () => { if (controller) controller.abort(); };
+
+function setBusy(b) {
+  busy = b; $("send").hidden = b; $("send").disabled = b; $("stop").hidden = !b;
+  if (b) qMsg("");
+}
+function scrollTo(node) { node.scrollIntoView({ block: "end" }); } // smooth behaviour comes from CSS (reduced-motion aware)
+
+async function ask(question) {
+  if (busy) return;
+  $("welcome").hidden = true;
+  setBusy(true);
+  const turn = el("section", "turn");
+  turn.setAttribute("aria-label", "Question and answer");
+  turn.append(el("div", "qbubble", question));
+  const card = el("div", "acard");
+  turn.appendChild(card);
+  $("chat").appendChild(turn);
+  const t0 = performance.now();
+  const steps = []; // {node, detail}
+  const prog = el("ul", "prog");
+  const skel = el("div", "skel"); skel.append(el("i"), el("i"), el("i"));
+  skel.setAttribute("aria-hidden", "true");
+  card.append(prog, skel);
+  const renderProg = (running) => {
+    prog.textContent = "";
+    steps.forEach((s) => {
+      const li = el("li"); const c = icon("check"); c.classList.add("ok");
+      li.append(c, el("span", "", NODE_LABEL[s.node] || s.node));
+      prog.appendChild(li);
+    });
+    if (running) {
+      const li = el("li"); li.append(el("span", "spin"), el("span", "", steps.length ? "Working…" : NODE_LABEL.route_question + "…"));
+      prog.appendChild(li);
+    }
+  };
+  renderProg(true);
+  scrollTo(turn);
+  const fail = (msg, stopped, retryable = true) => {
+    card.textContent = "";
+    card.appendChild(errorCard(msg, stopped, retryable ? () => { turn.remove(); ask(question); } : null));
+  };
+  controller = new AbortController();
+  let finished = false;
+  try {
+    const res = await fetch("/ask/stream", { method: "POST", signal: controller.signal,
+      headers: { "content-type": "application/json" }, body: JSON.stringify({ question }) });
+    if (!res.ok) throw await httpError(res);
+    if (q.value.trim() === question) { q.value = ""; autosize(); updateCount(); } // accepted: now the draft can go
+    const reader = res.body.getReader(); const dec = new TextDecoder(); let buf = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let i;
+      while ((i = buf.indexOf("\n\n")) >= 0) {
+        const line = buf.slice(0, i); buf = buf.slice(i + 2);
+        if (!line.startsWith("data: ")) continue;
+        let m; try { m = JSON.parse(line.slice(6)); } catch { continue; }
+        if (m.event === "node") { steps.push(m); renderProg(true); scrollTo(turn); }
+        else if (m.event === "error") {
+          const code = typeof m.code === "string" ? m.code : null;
+          throw new ApiError(codeText(code) || (code ? CODE_TEXT.internal : m.message) || "The server reported an error.", { code });
+        }
+        else if (m.event === "result") {
+          finished = true;
+          showResult(card, m, steps, (performance.now() - t0) / 1000, turn);
+        }
+      }
+    }
+    if (!finished) throw new Error("The connection closed before an answer arrived.");
+  } catch (e) {
+    if (e.name === "AbortError") fail("Generation stopped.", true);
+    else if (e.validation) {
+      // Rejected input: drop the bubble, give the text back, explain inline. No error card, no Retry.
+      turn.remove();
+      if (!q.value.trim()) { q.value = question; autosize(); updateCount(); }
+      if (!$("chat").children.length) $("welcome").hidden = false;
+      qMsg(e.message, true);
+    } else fail(e.message || String(e), false, e.retryable !== false);
+  } finally {
+    controller = null; setBusy(false); q.focus();
+  }
+}
+
+function errorCard(message, stopped, onRetry) {
+  const box = el("div", "callout " + (stopped ? "info" : "err"));
+  box.setAttribute("role", stopped ? "status" : "alert");
+  box.appendChild(icon(stopped ? "info" : "alert"));
+  const m = el("div", "msg");
+  m.append(el("b", "", stopped ? "Stopped" : "Something went wrong"), document.createTextNode(message));
+  box.appendChild(m);
+  if (onRetry) {
+    const b = el("button", "btn sm"); b.type = "button"; b.append(icon("retry"), document.createTextNode("Retry"));
+    b.onclick = onRetry; box.appendChild(b);
+  }
+  return box;
+}
+
+/* ---------- result ---------- */
+function pageLabel(p) { return p == null ? "" : typeof p === "number" ? `p. ${p}` : String(p); }
+function sourceHref(c) {
+  if (!/\.pdf$/i.test(c.source_file)) return null;
+  const path = c.source_file.split("/").map(encodeURIComponent).join("/");
+  return "/sources/" + path + (typeof c.page === "number" ? "#page=" + c.page : "");
+}
+function answerMarkdown(r) {
+  let md = r.answer.trim();
+  if (r.citations.length) {
+    md += "\n\nSources:\n" + r.citations.map((c) => `- [${c.id}] ${c.source_file}${c.page == null ? "" : ", " + pageLabel(c.page)}`).join("\n");
+  }
+  return md;
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch { /* fall through */ }
+  try {
+    const ta = el("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select(); const ok = document.execCommand("copy"); ta.remove(); return ok;
+  } catch { return false; }
+}
+
+function friendlyDetail(s) {
+  const d = String(s.detail || "");
+  if (!d) return "";
+  switch (s.node) {
+    case "route_question": return d === "docs" ? "about the documents" : d === "out_of_scope" ? "not about the documents" : d;
+    case "retrieve": return d.replace(/^(\d+) chunks?$/, (_, n) => `${n} passage${n === "1" ? "" : "s"} found`);
+    case "grade_documents": return d.replace(/^(\d+)\/(\d+) relevant$/, "$1 of $2 passages relevant");
+    case "check_hallucination": return d === "NOT grounded" ? "some claims not supported" : d === "grounded" ? "all claims supported" : d;
+    case "format_answer": {
+      const cleaned = /dangling marker/.test(d);
+      const base = d.replace(/,?\s*removed \d+ dangling marker\(s\)/, "").replace(/^(\d+) citations?$/, (_, n) => `${n} citation${n === "1" ? "" : "s"}`);
+      return cleaned ? (base ? base + " · " : "") + "Cleaned citation markers" : base;
+    }
+    default: return d;
+  }
+}
+
+function showResult(card, r, steps, secs, turn) {
+  card.textContent = "";
+  const cites = r.citations || [];
+  const declined = !!r.declined;
+  const byId = new Map(cites.map((c) => [c.id, c]));
+  const uid = "t" + Math.random().toString(36).slice(2, 8);
+
+  const reason = r.decline_reason || null; // absent on older servers: still rendered from the server's text
+  const outOfScope = declined && reason === "out_of_scope";
+  if (declined) {
+    // The server's answer text is already a clean, localized sentence; show it once, with the optional hint beneath.
+    const co = el("div", "callout " + (outOfScope ? "note" : "info")); co.setAttribute("role", "note");
+    const m = el("div", "msg", "");
+    m.appendChild(el("b", "", r.answer));
+    if (typeof r.hint === "string" && r.hint.trim()) m.appendChild(el("span", "subline", r.hint));
+    if (outOfScope && knownSources.length) m.appendChild(el("span", "subline manuals", (r.language === "de" ? "Handbücher: " : "Manuals: ") + knownSources.join(", ")));
+    co.append(icon("info"), m);
+    if (outOfScope) {
+      const lang = r.language === "de" ? "de" : "en";
+      const have = new Set(knownSources);
+      const inLang = EXAMPLES.filter((e) => e[0] === lang);
+      const pool = inLang.length ? inLang : EXAMPLES;
+      const picks = pool.filter((e) => have.has(e[2]));
+      const list = el("div", "examples");
+      (picks.length ? picks : pool).slice(0, 2).forEach(([l, text, src]) => {
+        const bt = el("button", "ex"); bt.type = "button";
+        bt.append(el("span", "", text), el("small", "", l.toUpperCase() + " · " + src));
+        bt.onclick = () => { if (!busy) ask(text); };
+        list.appendChild(bt);
+      });
+      co.appendChild(list);
+    }
+    card.appendChild(co);
+  }
+  const body = el("div", "abody");
+  r.answer.split(/(\[\d+\])/).forEach((part) => {
+    const m = /^\[(\d+)\]$/.exec(part);
+    if (!m) { body.appendChild(document.createTextNode(part)); return; }
+    const id = Number(m[1]);
+    if (!byId.has(id)) { body.appendChild(el("span", "cite-ref plain", m[1])); return; }
+    const b = el("button", "cite-ref", m[1]); b.type = "button";
+    b.setAttribute("aria-label", `Source ${id}: ${byId.get(id).source_file}`);
+    b.onclick = () => {
+      const row = document.getElementById(`${uid}-${id}`);
+      if (!row) return;
+      row.closest("details").open = true;
+      row.scrollIntoView({ block: "center" });
+      row.classList.add("hl"); setTimeout(() => row.classList.remove("hl"), 1600);
+      row.focus({ preventScroll: true });
+    };
+    body.appendChild(b);
+  });
+  if (!declined) card.appendChild(body); // declined: the callout above already shows the answer text
+
+  // footer: grounded chip, heuristic confidence, copy
+  const foot = el("div", "foot");
+  if (!declined && cites.length) {
+    const n = new Set(cites.map((c) => c.source_file + "|" + c.page)).size;
+    const ch = el("span", "chipf ok"); ch.append(icon("check"), document.createTextNode(`Grounded in ${n} source${n === 1 ? "" : "s"}`));
+    foot.appendChild(ch);
+  }
+  // "Grounded" already implies a high-confidence pass; only surface the heuristic when it says something else.
+  const groundedChip = !declined && cites.length > 0;
+  if (r.confidence && !(groundedChip && r.confidence === "high")) {
+    const cf = el("span", "chipf quiet", `Confidence: ${r.confidence}`);
+    cf.tabIndex = 0;
+    cf.title = "Heuristic: a rule-based estimate from pipeline checks (groundedness, relevant chunks, retries). It is not a probability.";
+    cf.setAttribute("aria-label", `Confidence: ${r.confidence} (heuristic estimate)`);
+    foot.appendChild(cf);
+  }
+  const cp = el("button", "btn sm push");
+  if (declined) { cp.hidden = true; }
+  cp.type = "button"; cp.append(icon("copy"), el("span", "", "Copy answer"));
+  cp.onclick = async () => {
+    const ok = await copyText(answerMarkdown(r));
+    cp.lastChild.textContent = ok ? "Copied" : "Copy failed";
+    setTimeout(() => { cp.lastChild.textContent = "Copy answer"; }, 1800);
+  };
+  foot.appendChild(cp);
+  if (!foot.querySelector(".chipf")) foot.hidden = true; // nothing to show (e.g. declined answers)
+  card.appendChild(foot);
+
+  // sources
+  if (cites.length) {
+    const d = el("details", "sources");
+    const c0 = cites[0];
+    d.appendChild(el("summary", "", `Sources: ${c0.source_file}${c0.page == null ? "" : " " + (typeof c0.page === "number" ? "p." + c0.page : c0.page)}${cites.length > 1 ? " +" + (cites.length - 1) : ""}`));
+    cites.forEach((c) => {
+      const row = el("div", "src"); row.id = `${uid}-${c.id}`; row.tabIndex = -1;
+      const n = el("span", "cite-ref plain n", String(c.id));
+      const head = el("div");
+      const label = c.source_file + (c.page == null ? "" : " · " + pageLabel(c.page));
+      const href = sourceHref(c);
+      if (href) {
+        const a = el("a", "badge", label); a.href = href; a.target = "_blank"; a.rel = "noopener";
+        a.title = "Open the PDF in a new tab"; head.appendChild(a);
+      } else {
+        const sp = el("span", "badge", label);
+        if (/\.docx$/i.test(c.source_file)) sp.title = "Download not available for Word files";
+        head.appendChild(sp);
+      }
+      const snip = el("p", "snip", (c.snippet || "").replace(/\s+/g, " ").trim());
+      const col = el("div", "col"); col.append(head, snip); row.append(n, col);
+      if (snip.textContent.length > 120) {
+        const mb = el("button", "more", "Show more"); mb.type = "button"; mb.setAttribute("aria-expanded", "false");
+        mb.onclick = () => {
+          const open = snip.classList.toggle("open");
+          mb.textContent = open ? "Show less" : "Show more"; mb.setAttribute("aria-expanded", String(open));
+        };
+        col.appendChild(mb);
+      }
+      d.appendChild(row);
+    });
+    card.appendChild(d);
+  }
+
+  // reasoning (collapsed)
+  const rd = el("details", "reason");
+  const sm = el("summary", "", `Reasoning: ${steps.length} step${steps.length === 1 ? "" : "s"} · ${secs.toFixed(1)}s`);
+  if (steps.some((s) => s.node === "rewrite_query")) sm.appendChild(el("span", "tag", "query rewritten"));
+  rd.appendChild(sm);
+  const ul = el("ul", "prog");
+  steps.forEach((s) => {
+    const li = el("li"); const c = icon("check"); c.classList.add("ok");
+    const dt = friendlyDetail(s);
+    li.append(c, el("span", "", (NODE_LABEL[s.node] || s.node) + (dt ? " — " + dt : "")));
+    ul.appendChild(li);
+  });
+  rd.appendChild(ul);
+  card.appendChild(rd);
+  scrollTo(turn);
+}
+
+/* ---------- upload ---------- */
+const queue = []; // {file, status: queued|indexing|done|failed, note}
+const OK_EXT = /\.(pdf|docx)$/i;
+function renderQueue() {
+  const ul = $("files"); ul.textContent = "";
+  queue.forEach((it) => {
+    const li = el("li");
+    li.append(el("span", "nm", it.file.name), el("span", "st " + it.status, it.status + (it.note ? ": " + it.note : "")));
+    ul.appendChild(li);
+  });
+  $("up").disabled = uploading || !queue.some((i) => i.status === "queued");
+}
+let uploading = false;
+function addFiles(list) {
+  const rejected = [];
+  for (const f of list) {
+    if (!OK_EXT.test(f.name)) { rejected.push(f.name); continue; }
+    for (let k = queue.length - 1; k >= 0; k--) { // re-adding a file replaces its earlier failed/queued row
+      if (queue[k].file.name === f.name && (queue[k].status === "failed" || queue[k].status === "queued")) queue.splice(k, 1);
+    }
+    queue.push({ file: f, status: "queued", note: "" });
+  }
+  $("upmsg").textContent = rejected.length ? `Skipped (only .pdf and .docx are supported): ${rejected.join(", ")}` : "";
+  renderQueue();
+}
+const drop = $("drop");
+drop.onclick = () => $("file").click();
+drop.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } };
+$("file").onchange = () => { addFiles($("file").files); $("file").value = ""; };
+["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
+
+$("up").onclick = async () => {
+  uploading = true; renderQueue();
+  $("upmsg").textContent = "Indexing… the first run can take a minute.";
+  let done = 0, failed = 0;
+  for (const it of queue.filter((i) => i.status === "queued")) {
+    it.status = "indexing"; renderQueue();
+    try {
+      const fd = new FormData(); fd.append("file", it.file);
+      const res = await fetch("/ingest", { method: "POST", body: fd });
+      if (!res.ok) throw await httpError(res);
+      const j = await res.json();
+      const bad = (j.results || []).find((x) => x.status === "failed");
+      if (bad) throw new Error(bad.error || "failed");
+      it.status = "done"; it.note = `${j.chunks} chunks`; done++;
+    } catch (e) { it.status = "failed"; it.note = e.message; failed++; }
+    renderQueue();
+  }
+  uploading = false; renderQueue();
+  $("upmsg").textContent = `Finished: ${done} indexed${failed ? `, ${failed} failed` : ""}.`;
+  refreshStatus(); loadDocs();
+};
+
+/* ---------- documents panel ---------- */
+const dlg = $("docsDlg"); let docsOpener = null;
+function setExpanded(v) { $("docsBtn").setAttribute("aria-expanded", String(v)); $("docsLink").setAttribute("aria-expanded", String(v)); }
+function openDocs(opener) {
+  docsOpener = opener; $("docmsg").textContent = ""; $("docmsg").className = "";
+  if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", ""); }
+  setExpanded(true); loadDocs();
+}
+function closeDocs() { if (dlg.open) dlg.close(); }
+dlg.addEventListener("close", () => {
+  setExpanded(false);
+  const o = docsOpener && docsOpener.isConnected && !docsOpener.hidden ? docsOpener : $("docsBtn");
+  o.focus(); docsOpener = null;
+});
+$("docsBtn").onclick = () => openDocs($("docsBtn"));
+$("docsLink").onclick = () => openDocs($("docsLink"));
+$("docsClose").onclick = closeDocs;
+dlg.addEventListener("click", (e) => { if (e.target === dlg) closeDocs(); }); // backdrop click
+
+function docMsg(text, bad) { const m = $("docmsg"); m.textContent = text; m.className = bad ? "bad" : ""; }
+function renderDocs(list) {
+  const ul = $("doclist"); ul.textContent = "";
+  if (!list.length) { const li = el("li", "", "No documents indexed yet."); ul.appendChild(li); return; }
+  list.forEach((d) => {
+    const li = el("li");
+    li.append(el("span", "nm", d.source_file), el("span", "ct", `${d.chunks} chunk${d.chunks === 1 ? "" : "s"}`));
+    const rm = el("button", "btn sm", "Remove"); rm.type = "button";
+    rm.setAttribute("aria-label", `Remove ${d.source_file}`);
+    rm.onclick = () => {
+      rm.hidden = true;
+      const box = el("div", "confirm"); box.setAttribute("role", "group");
+      box.setAttribute("aria-label", `Confirm removal of ${d.source_file}`);
+      const yes = el("button", "btn sm danger", "Confirm"); yes.type = "button";
+      const no = el("button", "btn sm", "Cancel"); no.type = "button";
+      no.onclick = () => { box.remove(); rm.hidden = false; rm.focus(); };
+      yes.onclick = async () => {
+        yes.disabled = no.disabled = true;
+        try {
+          const res = await fetch("/documents/" + d.source_file.split("/").map(encodeURIComponent).join("/"), { method: "DELETE" });
+          if (!res.ok && res.status !== 404) throw await httpError(res);
+          docMsg(res.status === 404 ? `${d.source_file} was already removed.` : `Removed ${d.source_file}.`, false);
+        } catch (e) { docMsg(`Could not remove ${d.source_file}: ${e.message}`, true); box.remove(); rm.hidden = false; return; }
+        await Promise.all([loadDocs(), refreshStatus()]);
+        const first = $("doclist").querySelector("button");
+        (first || $("drop")).focus();
+      };
+      const confirmText = d.is_sample === true
+        ? `Remove ${d.source_file}? It will be removed from the index. The sample file stays on disk and re-ingesting restores it.`
+        : d.is_sample === false
+          ? `Remove ${d.source_file}? This deletes the index entries and the uploaded copy from the server. Upload it again to restore it.`
+          : `Remove ${d.source_file} from the index?`;
+      box.append(el("span", "", confirmText), yes, no);
+      li.appendChild(box); yes.focus();
+    };
+    li.appendChild(rm); ul.appendChild(li);
+  });
+}
+async function loadDocs() {
+  try {
+    const res = await fetch("/documents");
+    if (!res.ok) throw await httpError(res);
+    const j = await res.json();
+    renderDocs(Array.isArray(j.documents) ? j.documents : []);
+  } catch (e) { docMsg("Could not load the document list: " + e.message, true); }
+}
+
+refreshStatus();
+renderQueue();
+</script>
+</body>
+</html>
