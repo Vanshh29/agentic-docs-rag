@@ -1,0 +1,35 @@
+services:
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"  # no auth in the API: keep it on localhost
+    env_file:
+      - .env
+    environment:
+      CHROMA_DIR: /app/data/chroma
+    volumes:
+      - ./data/chroma:/app/data/chroma
+      - ./data/raw:/app/data/raw
+      - hf_cache:/app/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # One-off: docker compose run --rm ingest   (indexes data/samples by default)
+  ingest:
+    build: .
+    profiles: ["tools"]
+    env_file:
+      - .env
+    environment:
+      CHROMA_DIR: /app/data/chroma
+    volumes:
+      - ./data/chroma:/app/data/chroma
+      - ./data/raw:/app/data/raw
+      - hf_cache:/app/.cache/huggingface
+    command: ["python", "-m", "docrag.ingest", "--path", "data/samples"]
+
+volumes:
+  hf_cache:
