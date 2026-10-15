@@ -2,12 +2,12 @@
 
 Usage:
     python scripts/deploy_hf.py --dry-run                 # only build the bundle and list it
-    python scripts/deploy_hf.py --space USER/NAME --model MODEL_ID    # create/update, stays private
+    python scripts/deploy_hf.py --space USER/NAME                     # create/update, stays private
     python scripts/deploy_hf.py --space USER/NAME --make-public       # when you are happy with it
 
 Needs `huggingface-cli login` with a token that can write (role "write", or a fine-grained token
-with repo write access). The LLM key is never uploaded: add OPENROUTER_API_KEY yourself under
-Space -> Settings -> Variables and secrets.
+with repo write access). The Space replays recorded answers (data/demo_answers.json, made by
+scripts/record_demo.py), so it needs no LLM key and makes no model calls.
 """
 
 from __future__ import annotations
@@ -18,14 +18,6 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-
-# Baked into the image so a public Space can never start with uploads or deletes enabled.
-DEMO_ENV = """
-# --- public demo (added by scripts/deploy_hf.py) ---
-RUN useradd -m -u 1000 user && mkdir -p data/chroma data/raw && chown -R user:user /app
-USER user
-ENV DEMO_MODE=true PRELOAD=true ASK_RATE_PER_MINUTE=5 ASK_DAILY_LIMIT=200 LLM_PROVIDER=openrouter
-"""
 
 SPACE_CARD = """---
 title: Docs Assistant
@@ -40,7 +32,9 @@ short_description: Ask questions about technical manuals, with cited answers
 Question answering over technical manuals (PDF and DOCX, German and English). Every answer cites
 the page it came from, and the assistant says so when the documents do not cover a question.
 
-This is a read-only demo over three invented sample manuals, with a per-visitor rate limit.
+This is a read-only recorded demo: the example questions were run once against three invented
+sample manuals, and their real answers are replayed here, so no model is called and no API key
+is involved. To ask your own questions, run the project locally.
 Source code and evaluation: https://github.com/Vanshh29/agentic-docs-rag
 """
 
@@ -49,15 +43,18 @@ _IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", "*.egg-info", ".DS_Stor
 
 def build_bundle(dest: Path) -> None:
     """Assemble the minimal build context for the Space in `dest`."""
+    answers = ROOT / "data" / "demo_answers.json"
+    if not answers.exists():
+        raise SystemExit("data/demo_answers.json is missing: run scripts/record_demo.py first")
     dest.mkdir(parents=True, exist_ok=True)
-    dockerfile = (ROOT / "Dockerfile").read_text().rstrip("\n") + "\n" + DEMO_ENV
-    (dest / "Dockerfile").write_text(dockerfile)
+    shutil.copy(ROOT / "Dockerfile.demo", dest / "Dockerfile")
     (dest / "README.md").write_text(SPACE_CARD)
     shutil.copy(ROOT / "pyproject.toml", dest / "pyproject.toml")
     shutil.copytree(ROOT / "src", dest / "src", ignore=_IGNORE, dirs_exist_ok=True)
     shutil.copytree(
         ROOT / "data" / "samples", dest / "data" / "samples", ignore=_IGNORE, dirs_exist_ok=True
     )
+    shutil.copy(answers, dest / "data" / "demo_answers.json")
 
 
 def main() -> None:
@@ -65,7 +62,6 @@ def main() -> None:
     p.add_argument(
         "--space", help="USER/NAME of the Space (default: <your user>/docs-assistant-demo)"
     )
-    p.add_argument("--model", help="value for the LLM_MODEL variable (a model id for the provider)")
     p.add_argument("--make-public", action="store_true", help="switch the Space to public")
     p.add_argument("--dry-run", action="store_true", help="build the bundle and stop")
     args = p.parse_args()
@@ -84,8 +80,6 @@ def main() -> None:
         repo_id = args.space or f"{api.whoami()['name']}/docs-assistant-demo"
         # Created private: nothing is public until --make-public.
         api.create_repo(repo_id, repo_type="space", space_sdk="docker", private=True, exist_ok=True)
-        if args.model:
-            api.add_space_variable(repo_id, "LLM_MODEL", args.model)
         api.upload_folder(
             folder_path=str(bundle),
             repo_id=repo_id,
@@ -96,7 +90,7 @@ def main() -> None:
             api.update_repo_settings(repo_id, repo_type="space", private=False)
         info = api.space_info(repo_id)
         print(f"Space: https://huggingface.co/spaces/{repo_id}  (private: {info.private})")
-        print("Next: add the secret OPENROUTER_API_KEY under Settings -> Variables and secrets.")
+        print("The Space builds automatically; open the URL above to follow the build.")
 
 
 if __name__ == "__main__":

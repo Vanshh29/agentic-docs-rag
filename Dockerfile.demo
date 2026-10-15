@@ -1,0 +1,30 @@
+# Public replay demo: answers come from data/demo_answers.json, so the image needs no API key and
+# makes no model calls. The sample index is built here, at image build time, which means the
+# running container never loads the embedding model.
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HF_HOME=/app/.cache/huggingface
+WORKDIR /app
+
+# CPU-only torch keeps the image small (sentence-transformers needs torch to build the index)
+RUN pip install --no-cache-dir --default-timeout=120 --retries 5 torch --index-url https://download.pytorch.org/whl/cpu
+
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir --default-timeout=120 --retries 5 .
+
+ARG EMBEDDING_MODEL=intfloat/multilingual-e5-small
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('${EMBEDDING_MODEL}')"
+
+COPY data/samples ./data/samples
+COPY data/demo_answers.json ./data/demo_answers.json
+RUN python -m docrag.ingest --path data/samples --reset
+
+# Run as a non-root user (hosting platforms such as Hugging Face Spaces require it).
+RUN useradd -m -u 1000 user && chown -R user:user /app
+USER user
+ENV DEMO_REPLAY=true DEMO_MODE=true ASK_RATE_PER_MINUTE=30 HF_HUB_OFFLINE=1
+
+EXPOSE 8000
+# Hosts such as Render inject $PORT; --proxy-headers makes the rate limiter see the real client IP.
+CMD ["sh", "-c", "exec uvicorn docrag.api:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]

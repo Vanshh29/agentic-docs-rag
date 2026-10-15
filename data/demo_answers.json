@@ -1,0 +1,561 @@
+{
+  "recorded_at": "2026-10-15",
+  "answers": [
+    {
+      "question": "How long does the machine need to heat up?",
+      "response": {
+        "answer": "The machine needs approximately 25 seconds to heat up after it is switched on [1].",
+        "declined": false,
+        "confidence": "high",
+        "decline_reason": null,
+        "language": "en",
+        "hint": null,
+        "citations": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 2,
+            "snippet": "2. Daily Operation\nFilling the water tank: remove the tank at the rear and fill it with fresh, cold water up to the MAX\nmark. The tank capacity is 1.8 litres.\nHeat-up: after switching on, the machine "
+          }
+        ],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "docs",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "How long does the machine need to heat up?",
+              "chunk_ids": [
+                "9d84d26ed97ee04f",
+                "2ce412a08e7a4c4c",
+                "1d9e783cb7319858",
+                "1cbb3303c29490dd",
+                "0a24cc61474d89d5",
+                "7e25d72ec2da8089"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "1/6 relevant",
+            "data": {
+              "relevant_chunk_ids": [
+                "9d84d26ed97ee04f"
+              ]
+            }
+          },
+          {
+            "node": "generate",
+            "detail": "generated",
+            "data": {
+              "sufficient": true
+            }
+          },
+          {
+            "node": "check_hallucination",
+            "detail": "grounded",
+            "data": {
+              "unsupported_claims": []
+            }
+          },
+          {
+            "node": "format_answer",
+            "detail": "1 citations",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "question": "My espresso tastes watery. How can I fix it?",
+      "response": {
+        "answer": "The sources do not use the word \"watery.\" The closest matching case is \"coffee tastes too weak,\" and the sources give this fix: select a finer grind [1]. The grinder has settings 1 to 12, where 1 is the finest, and the factory default is 5 [1].",
+        "declined": false,
+        "confidence": "high",
+        "decline_reason": null,
+        "language": "en",
+        "hint": null,
+        "citations": [
+          {
+            "id": 1,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 4,
+            "snippet": "4. Troubleshooting and Warranty\nError E01: the water tank is empty or not seated correctly. Refill the tank and push it firmly into\nplace.\nError E02: overheating protection (thermal fuse) triggered. U"
+          }
+        ],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "docs",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "My espresso tastes watery. How can I fix it?",
+              "chunk_ids": [
+                "1d9e783cb7319858",
+                "9d84d26ed97ee04f",
+                "1cbb3303c29490dd",
+                "2ce412a08e7a4c4c",
+                "216c76c32d6e5a87",
+                "7e25d72ec2da8089"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "3/6 relevant",
+            "data": {
+              "relevant_chunk_ids": [
+                "1d9e783cb7319858",
+                "9d84d26ed97ee04f",
+                "2ce412a08e7a4c4c"
+              ]
+            }
+          },
+          {
+            "node": "generate",
+            "detail": "generated",
+            "data": {
+              "sufficient": true
+            }
+          },
+          {
+            "node": "check_hallucination",
+            "detail": "grounded",
+            "data": {
+              "unsupported_claims": []
+            }
+          },
+          {
+            "node": "format_answer",
+            "detail": "1 citations",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "question": "Wie lange dauert das Laden einer Batterie mit 500 Ah?",
+      "response": {
+        "answer": "Das Laden einer 500-Ah-Batterie dauert etwa 8 Stunden, bei einer Entladungstiefe von 80 % [1].",
+        "declined": false,
+        "confidence": "high",
+        "decline_reason": null,
+        "language": "de",
+        "hint": null,
+        "citations": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 2,
+            "snippet": "2. Inbetriebnahme und Laden\nDas Ladegerät ist für Batterien mit 48 V Nennspannung und einer Kapazität von 200 bis 600 Ah\nausgelegt. Der maximale Ladestrom beträgt 80 A.\nVerbinden Sie zuerst den Batter"
+          }
+        ],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "docs",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "Wie lange dauert das Laden einer Batterie mit 500 Ah?",
+              "chunk_ids": [
+                "a7d1ee98b8f4f950",
+                "0a24cc61474d89d5",
+                "311efee5e60d5189",
+                "7e25d72ec2da8089",
+                "d38040bc78b0bf82",
+                "216c76c32d6e5a87"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "2/6 relevant",
+            "data": {
+              "relevant_chunk_ids": [
+                "a7d1ee98b8f4f950",
+                "0a24cc61474d89d5"
+              ]
+            }
+          },
+          {
+            "node": "generate",
+            "detail": "generated",
+            "data": {
+              "sufficient": true
+            }
+          },
+          {
+            "node": "check_hallucination",
+            "detail": "grounded",
+            "data": {
+              "unsupported_claims": []
+            }
+          },
+          {
+            "node": "format_answer",
+            "detail": "1 citations",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "question": "Wie oft muss der HEPA-Filter H13 gewechselt werden?",
+      "response": {
+        "answer": "Der HEPA-Filter H13 muss alle 12 Monate gewechselt werden [1].",
+        "declined": false,
+        "confidence": "high",
+        "decline_reason": null,
+        "language": "de",
+        "hint": null,
+        "citations": [
+          {
+            "id": 1,
+            "source_file": "air_purifier_manual_de.docx",
+            "page": "Filterwechsel",
+            "snippet": "Filterwechsel\nDer HEPA-Filter H13 muss alle 12 Monate gewechselt werden. Der Aktivkohlefilter muss alle 6 Monate gewechselt werden.\nDen Vorfilter alle 2 Wochen mit einem Staubsauger absaugen.\nDie Filt"
+          }
+        ],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "docs",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "Wie oft muss der HEPA-Filter H13 gewechselt werden?",
+              "chunk_ids": [
+                "d38040bc78b0bf82",
+                "7e25d72ec2da8089",
+                "216c76c32d6e5a87",
+                "0a24cc61474d89d5",
+                "ae805544845bd223",
+                "a7d1ee98b8f4f950"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "1/6 relevant",
+            "data": {
+              "relevant_chunk_ids": [
+                "d38040bc78b0bf82"
+              ]
+            }
+          },
+          {
+            "node": "generate",
+            "detail": "generated",
+            "data": {
+              "sufficient": true
+            }
+          },
+          {
+            "node": "check_hallucination",
+            "detail": "grounded",
+            "data": {
+              "unsupported_claims": []
+            }
+          },
+          {
+            "node": "format_answer",
+            "detail": "1 citations",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "question": "How often should the espresso machine be descaled?",
+      "response": {
+        "answer": "The espresso machine should be descaled every 3 months, or immediately when the descale light blinks [2].",
+        "declined": false,
+        "confidence": "high",
+        "decline_reason": null,
+        "language": "en",
+        "hint": null,
+        "citations": [
+          {
+            "id": 2,
+            "source_file": "espresso_machine_manual_en.pdf",
+            "page": 3,
+            "snippet": "3. Cleaning and Maintenance\nDaily: empty the drip tray and rinse the portafilter and filter baskets with warm water.\nWeekly: backflush the brew group. Insert the blind filter basket with one cleaning "
+          }
+        ],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "docs",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "How often should the espresso machine be descaled?",
+              "chunk_ids": [
+                "2ce412a08e7a4c4c",
+                "1cbb3303c29490dd",
+                "1d9e783cb7319858",
+                "9d84d26ed97ee04f",
+                "7e25d72ec2da8089",
+                "216c76c32d6e5a87"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "2/6 relevant",
+            "data": {
+              "relevant_chunk_ids": [
+                "2ce412a08e7a4c4c",
+                "1cbb3303c29490dd"
+              ]
+            }
+          },
+          {
+            "node": "generate",
+            "detail": "generated",
+            "data": {
+              "sufficient": true
+            }
+          },
+          {
+            "node": "check_hallucination",
+            "detail": "grounded",
+            "data": {
+              "unsupported_claims": []
+            }
+          },
+          {
+            "node": "format_answer",
+            "detail": "1 citations",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "question": "What does error F2 mean on the forklift charger?",
+      "response": {
+        "answer": "Error F2 means \"battery not detected\" (German: \"Batterie nicht erkannt\"). The manual's recommended action is to check the battery connector and the contacts [1].",
+        "declined": false,
+        "confidence": "high",
+        "decline_reason": null,
+        "language": "en",
+        "hint": null,
+        "citations": [
+          {
+            "id": 1,
+            "source_file": "forklift_charger_manual_de.pdf",
+            "page": 4,
+            "snippet": "4. Fehlerbehebung und Garantie\nFehler F1: Überspannung im Netz. Prüfen Sie die Netzspannung.\nFehler F2: Batterie nicht erkannt. Prüfen Sie den Batteriestecker und die Kontakte.\nFehler F3: Übertemperat"
+          }
+        ],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "docs",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "What does error F2 mean on the forklift charger?",
+              "chunk_ids": [
+                "1d9e783cb7319858",
+                "0a24cc61474d89d5",
+                "216c76c32d6e5a87",
+                "9d84d26ed97ee04f",
+                "2ce412a08e7a4c4c",
+                "a7d1ee98b8f4f950"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "1/6 relevant",
+            "data": {
+              "relevant_chunk_ids": [
+                "0a24cc61474d89d5"
+              ]
+            }
+          },
+          {
+            "node": "generate",
+            "detail": "generated",
+            "data": {
+              "sufficient": true
+            }
+          },
+          {
+            "node": "check_hallucination",
+            "detail": "grounded",
+            "data": {
+              "unsupported_claims": []
+            }
+          },
+          {
+            "node": "format_answer",
+            "detail": "1 citations",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "question": "What is the price of the espresso machine?",
+      "response": {
+        "answer": "I could not find sufficient information in the documentation to answer this.",
+        "declined": true,
+        "confidence": null,
+        "decline_reason": "insufficient_info",
+        "language": "en",
+        "hint": "Try rephrasing your question, or check that the relevant manual is indexed.",
+        "citations": [],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "docs",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "What is the price of the espresso machine?",
+              "chunk_ids": [
+                "2ce412a08e7a4c4c",
+                "9d84d26ed97ee04f",
+                "1d9e783cb7319858",
+                "1cbb3303c29490dd",
+                "0a24cc61474d89d5",
+                "ae805544845bd223"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "0/6 relevant",
+            "data": {
+              "relevant_chunk_ids": []
+            }
+          },
+          {
+            "node": "rewrite_query",
+            "detail": "espresso machine price cost retail price list price MSRP purchase price, espresso maker coffee machine, pricing, EUR USD",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "espresso machine price cost retail price list price MSRP purchase price, espresso maker coffee machine, pricing, EUR USD",
+              "chunk_ids": [
+                "2ce412a08e7a4c4c",
+                "9d84d26ed97ee04f",
+                "1d9e783cb7319858",
+                "1cbb3303c29490dd",
+                "0a24cc61474d89d5",
+                "216c76c32d6e5a87"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "0/6 relevant",
+            "data": {
+              "relevant_chunk_ids": []
+            }
+          },
+          {
+            "node": "rewrite_query",
+            "detail": "espresso machine price cost list price MSRP retail price purchase price EUR USD",
+            "data": {}
+          },
+          {
+            "node": "retrieve",
+            "detail": "6 chunks",
+            "data": {
+              "query": "espresso machine price cost list price MSRP retail price purchase price EUR USD",
+              "chunk_ids": [
+                "2ce412a08e7a4c4c",
+                "1d9e783cb7319858",
+                "9d84d26ed97ee04f",
+                "1cbb3303c29490dd",
+                "216c76c32d6e5a87",
+                "0a24cc61474d89d5"
+              ]
+            }
+          },
+          {
+            "node": "grade_documents",
+            "detail": "1/6 relevant",
+            "data": {
+              "relevant_chunk_ids": [
+                "1d9e783cb7319858"
+              ]
+            }
+          },
+          {
+            "node": "generate",
+            "detail": "generated",
+            "data": {
+              "sufficient": false
+            }
+          },
+          {
+            "node": "check_hallucination",
+            "detail": "skipped (declined)",
+            "data": {}
+          },
+          {
+            "node": "format_answer",
+            "detail": "declined: model reported insufficient context",
+            "data": {}
+          }
+        ]
+      }
+    },
+    {
+      "question": "Who won the football world cup in 2018?",
+      "response": {
+        "answer": "I only answer questions about the technical documentation. How can I help with that?",
+        "declined": true,
+        "confidence": null,
+        "decline_reason": "out_of_scope",
+        "language": "en",
+        "hint": null,
+        "citations": [],
+        "trace": [
+          {
+            "node": "route_question",
+            "detail": "out_of_scope",
+            "data": {}
+          },
+          {
+            "node": "respond_out_of_scope",
+            "detail": "",
+            "data": {}
+          }
+        ]
+      }
+    }
+  ]
+}

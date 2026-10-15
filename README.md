@@ -72,47 +72,61 @@ Embeddings are local and multilingual (`intfloat/multilingual-e5-small`, swappab
 
 ## Public demo deployment
 
-The API has no authentication, so a public instance must not allow uploads or deletes and must
-cap how many questions it answers. Four settings (all off by default) cover that:
+The API has no authentication, and a hosted model costs money per question, so a public instance
+needs two things: no write access, and either no model calls or a hard cap on them. There are two
+ways to run one.
+
+### Recorded demo (no model calls, no key, no bill)
+
+`DEMO_REPLAY=true` serves **recorded answers** instead of calling a model. `scripts/record_demo.py`
+runs the real pipeline once per example question (against the sample manuals only) and saves each
+answer with its citations and reasoning steps to `data/demo_answers.json`; the public app looks
+questions up in that file. The UI labels everything as recorded, builds its example cards from the
+recorded questions, and answers any other question with a clear "run it locally" message.
+
+- Each answer is one real run. A refusal on a question that should be answerable is re-run, up to
+  3 attempts; the script prints how many attempts each answer needed (all 8 took one).
+- It needs about 150 MB of RAM. The index is built when the image is built (`Dockerfile.demo`), so
+  the running container never loads the embedding model.
+- It is read-only and rate limited (`ASK_RATE_PER_MINUTE`), but it cannot run up a model bill
+  because it calls no model.
+
+```bash
+PYTHONPATH=src python scripts/record_demo.py       # re-record (uses your local LLM setup)
+DEMO_REPLAY=true uvicorn docrag.api:app            # run the replay locally
+```
+
+**Render:** `render.yaml` deploys `Dockerfile.demo` as one free web service (New, then Blueprint,
+then select this repository). It needs no secrets. Free services sleep after 15 minutes without
+traffic and take a moment to wake up.
+
+**Hugging Face Spaces:** `scripts/deploy_hf.py` publishes the same image as a Docker Space. It
+creates the Space private and only makes it public with `--make-public`.
+
+```bash
+huggingface-cli login            # a token with write access
+python scripts/deploy_hf.py --space YOUR_USER/docs-assistant-demo                # private
+python scripts/deploy_hf.py --space YOUR_USER/docs-assistant-demo --make-public  # when ready
+```
+
+`python scripts/deploy_hf.py --dry-run` lists what would be uploaded.
+
+### Live demo (needs a paid model API key)
+
+To let visitors ask their own questions you need a hosted model, which means an API key and a
+bill. Settings for a public instance (all off by default):
 
 | Variable | Effect |
 |---|---|
 | `DEMO_MODE=true` | Read-only: `POST /ingest` and `DELETE /documents/*` return 403, and the UI hides upload and remove. |
 | `ASK_RATE_PER_MINUTE=5` | At most 5 questions per minute per client IP (`429` with `Retry-After`). |
-| `ASK_DAILY_LIMIT=200` | At most 200 questions per UTC day across all visitors, a spend cap for the LLM key. |
+| `ASK_DAILY_LIMIT=200` | At most 200 questions per UTC day across all visitors, a spend cap for the key. |
 | `PRELOAD=true` | At startup, load the models and index `data/samples` if the index is empty. |
 
-The limits are in memory, so they reset on restart and are per instance. That is enough for a
-single-instance demo.
-
-`render.yaml` deploys this as one Docker web service on [Render](https://render.com): New, then
-Blueprint, then select this repository, and fill in the two secrets it asks for
-(`OPENROUTER_API_KEY` and `LLM_MODEL`; any OpenAI-compatible provider works through
-`LLM_PROVIDER=openrouter`). Notes:
-
-- The container uses about 0.9 GB of RAM once the embedding model is loaded, so choose a plan
-  with at least 2 GB of headroom (1 GB is too tight). The model is baked into the image, so a cold start does not download it.
-- The disk is ephemeral. That is fine here: the sample manuals are re-indexed on every start
-  (about 10 s).
-- The frontend is served by the same service, so there is no separate frontend host and no CORS
-  setup.
-
-### Alternative: Hugging Face Spaces
-
-`scripts/deploy_hf.py` publishes the same read-only demo as a Docker Space. It builds a minimal
-bundle (Dockerfile, `src/`, the sample manuals, a Space card), bakes the demo settings
-(`DEMO_MODE`, `PRELOAD`, rate limits) into the image so a public Space can never start with uploads
-enabled, and runs as the non-root user a Space requires.
-
-```bash
-huggingface-cli login            # a token with write access
-python scripts/deploy_hf.py --space YOUR_USER/docs-assistant-demo --model MODEL_ID   # private
-python scripts/deploy_hf.py --space YOUR_USER/docs-assistant-demo --make-public      # when ready
-```
-
-Then add `OPENROUTER_API_KEY` as a secret under the Space's Settings. The key is never uploaded by
-the script. If it is missing the page and index still load and questions fail with a logged error.
-`python scripts/deploy_hf.py --dry-run` lists what would be uploaded.
+Use the plain `Dockerfile` with `LLM_PROVIDER=openrouter`, a key and `LLM_MODEL` as secrets. The
+container then uses about 0.9 GB of RAM, so the free hosting tiers are too small. The limits are
+in memory, so they reset on restart and are per instance. If the key is missing the page and index
+still load and questions fail with a logged error.
 
 ## Evaluation results
 

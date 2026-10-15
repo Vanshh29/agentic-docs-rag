@@ -14,3 +14,6 @@ eval/results/*
 .claude/
 CLAUDE.md
 .DS_Store
+
+# local list of words the demo recorder must keep out of recorded answers
+.demo-blocklist
