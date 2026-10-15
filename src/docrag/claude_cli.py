@@ -27,7 +27,7 @@ T = TypeVar("T", bound=BaseModel)
 
 class ChatClaudeCLI(BaseChatModel):
     model: str = "haiku"
-    max_concurrency: int = 3
+    max_concurrency: int = 6  # >= TOP_K so one grading wave covers all chunks
     timeout_s: float = 120.0
     _sem: asyncio.Semaphore | None = None
 

@@ -25,8 +25,12 @@ sources provided. Rules:
 - Every factual statement must end with an inline citation marker like [1] or [1][3] referring to \
 the source numbers.
 - Never use knowledge outside the sources.
+- Cite only sources whose content you actually used. Never mention or cite a source just to say it \
+is irrelevant or about a different product; leave it out of the answer entirely.
 - If the sources do not contain enough information, set sufficient=false and say so plainly in \
 the answer (without inventing details).
+- State only what the sources say. Do not add commentary about the sources themselves (their \
+formatting, line breaks, wording or what they do not call something).
 - Answer in the same language as the question."""
 GENERATE_HUMAN = "Sources:\n{context}\n\nQuestion: {question}"
 GENERATE_FEEDBACK = """
