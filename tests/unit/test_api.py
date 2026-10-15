@@ -53,6 +53,8 @@ def test_frontend_and_status() -> None:
         "model": make_settings().llm_model,
         "demo_mode": False,
         "indexing": False,
+        "replay": False,
+        "examples": [],
         "sources": ["m.pdf"],
     }
 

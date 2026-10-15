@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import shutil
@@ -27,10 +28,12 @@ from docrag.ingest import ingest_path
 from docrag.ingest.loaders import SUPPORTED
 from docrag.ingest.pipeline import IngestStats
 from docrag.ratelimit import AskLimiter
+from docrag.replay import NoEmbeddings, NullChatModel, ReplayBook
 from docrag.schemas import AskRequest, AskResponse
 
 STATIC = Path(__file__).parent / "static"
 log = logging.getLogger(__name__)
+REPLAY_STEP_DELAY_S = 0.35  # pacing of replayed reasoning steps so the progress list stays readable
 GENERIC_ERROR = MESSAGES["internal"]
 
 
@@ -52,6 +55,8 @@ def default_deps() -> Deps:
     from docrag.store import ChromaStore
 
     s = get_settings()
+    if s.demo_replay:  # no model is ever loaded or called; the index is only listed
+        return Deps(NullChatModel(), ChromaStore(NoEmbeddings(), s), s)
     return Deps(make_llm(s), ChromaStore(make_embeddings(s), s), s)
 
 
@@ -91,6 +96,26 @@ def _remove_upload(d: Deps, name: str) -> bool:
     return True
 
 
+def _load_book(d: Deps) -> ReplayBook:
+    if not d.settings.demo_replay:
+        return ReplayBook.empty()
+    try:
+        return ReplayBook.load(d.settings.demo_answers_file)
+    except ValueError:
+        log.exception("replay mode is on but the recorded answers could not be loaded")
+        return ReplayBook.empty()
+
+
+def _replay_only() -> HTTPException:
+    return HTTPException(
+        422,
+        {
+            "detail": "This demo replays recorded answers to its example questions only.",
+            "code": "replay_only",
+        },
+    )
+
+
 def _demo_blocked() -> HTTPException:
     return HTTPException(
         403,
@@ -122,6 +147,8 @@ def create_app(
     def warm_up() -> None:
         try:
             d = deps()
+            if d.settings.demo_replay:
+                return  # the index is built into the image; no embedding model is available
             if d.store.count() == 0 and d.settings.samples_dir.is_dir():
                 ingest_path(d.settings.samples_dir, d.store, d.settings)
         except Exception:
@@ -135,6 +162,7 @@ def create_app(
                 if "graph" not in cache:
                     d = deps_factory()
                     cache["deps"] = d
+                    cache["book"] = _load_book(d)
                     cache["limiter"] = AskLimiter(
                         d.settings.ask_rate_per_minute, d.settings.ask_daily_limit
                     )
@@ -195,6 +223,8 @@ def create_app(
             "model": d.settings.llm_model,
             "demo_mode": d.settings.demo_mode,
             "indexing": bool(cache.get("warming")),
+            "replay": d.settings.demo_replay,
+            "examples": cache["book"].examples() if d.settings.demo_replay else [],
             "sources": sorted(await run_in_threadpool(d.store.list_sources)),
         }
 
@@ -210,6 +240,11 @@ def create_app(
             log.exception("/ask failed")
             raise _error_response(e) from e
         limit_asks(request)  # outside the try: a 429 must not be reported as a server error
+        if d.settings.demo_replay:
+            recorded = cache["book"].get(req.question)
+            if recorded is None:
+                raise _replay_only()
+            return recorded  # type: ignore[no-any-return]
         try:
             g = cache["graph"]
             return to_response(await run_question(g, req.question), d.settings.min_relevant_docs)
@@ -217,10 +252,22 @@ def create_app(
             log.exception("/ask failed")
             raise _error_response(e) from e
 
+    async def replay_events(recorded: Any) -> AsyncIterator[str]:
+        for step in recorded.trace:
+            payload = {"event": "node", "node": step.node, "detail": step.detail}
+            yield f"data: {json.dumps(payload)}\n\n"
+            await asyncio.sleep(REPLAY_STEP_DELAY_S)
+        yield f"data: {json.dumps({'event': 'result', **recorded.model_dump(mode='json')})}\n\n"
+
     @app.post("/ask/stream")
     async def ask_stream(req: AskRequest, request: Request) -> StreamingResponse:
-        await run_in_threadpool(deps)
+        d0 = await run_in_threadpool(deps)
         limit_asks(request)
+        if d0.settings.demo_replay:
+            recorded = cache["book"].get(req.question)
+            if recorded is None:
+                raise _replay_only()
+            return StreamingResponse(replay_events(recorded), media_type="text/event-stream")
 
         async def events() -> AsyncIterator[str]:
             try:
@@ -289,7 +336,7 @@ def create_app(
     @app.delete("/documents/{file:path}")
     async def delete_document(file: str) -> dict[str, Any]:
         d = await run_in_threadpool(deps)
-        if d.settings.demo_mode:
+        if d.settings.demo_mode or d.settings.demo_replay:
             raise _demo_blocked()
 
         def work() -> dict[str, Any] | None:
@@ -316,7 +363,7 @@ def create_app(
     @app.post("/ingest", response_model=None)
     async def ingest(file: UploadFile) -> JSONResponse | dict[str, Any]:
         d = await run_in_threadpool(deps)
-        if d.settings.demo_mode:
+        if d.settings.demo_mode or d.settings.demo_replay:
             raise _demo_blocked()
         name = Path(file.filename or "").name
         if not name or name.startswith(".") or Path(name).suffix.lower() not in SUPPORTED:

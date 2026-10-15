@@ -48,6 +48,9 @@ class Settings(BaseSettings):
     ask_daily_limit: int = Field(
         default=0, ge=0
     )  # all clients together, per UTC day; 0 = unlimited
+    # Replay: answer only from recorded answers (no model calls, so no API key and no bill).
+    demo_replay: bool = False
+    demo_answers_file: Path = Path("./data/demo_answers.json")
     preload: bool = False  # at startup: load the models and index samples_dir if the index is empty
 
     @model_validator(mode="after")

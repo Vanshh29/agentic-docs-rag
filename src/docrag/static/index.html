@@ -65,8 +65,9 @@
   .pill.demo { color: var(--text); } .pill.demo::before { background: var(--accent); }
   .pill.busy::before { background: var(--warn); animation: pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 50% { opacity: .35; } }
-  .demo-hint { display: none; }
-  body.demo .demo-hint { display: block; font-size: var(--fs-sm); }
+  .demo-hint, .replay-hint { display: none; }
+  body.demo .demo-hint, body.replay .replay-hint { display: block; font-size: var(--fs-sm); }
+  body.replay .demo-hint { display: none; }
   .icon-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px;
               min-width: var(--touch); min-height: var(--touch); border: 1px solid transparent;
               background: transparent; border-radius: 10px; padding: 0 10px; }
@@ -267,6 +268,7 @@
     <p class="addhint">Using your own manuals?
       <button type="button" class="linkbtn" id="docsLink" aria-haspopup="dialog" aria-controls="docsDlg">Add or manage documents</button></p>
     <p class="demo-hint">Public demo: it answers from three sample manuals and uploads are turned off. Clone the repository to use your own documents.</p>
+    <p class="replay-hint">Recorded demo: these questions were run once against the sample manuals and their real answers are replayed here, so no model is called while you browse. Pick one of the cards above. To ask your own questions, run the project locally.</p>
   </section>
   <div id="chat" aria-live="polite" aria-relevant="additions"></div>
 </main>
@@ -360,12 +362,17 @@ $("theme").onclick = () => {
 };
 
 /* ---------- empty state ---------- */
-EXAMPLES.forEach(([lang, text, src]) => {
-  const b = el("button", "ex"); b.type = "button";
-  b.append(el("span", "", text), el("small", "", lang.toUpperCase() + " · " + src));
-  b.onclick = () => ask(text);
-  $("examples").appendChild(b);
-});
+function renderExamples(list) {
+  const box = $("examples"); box.textContent = "";
+  list.forEach(([lang, text, src]) => {
+    const b = el("button", "ex"); b.type = "button";
+    b.append(el("span", "", text), el("small", "", lang.toUpperCase() + " · " + src));
+    b.onclick = () => ask(text);
+    box.appendChild(b);
+  });
+}
+renderExamples(EXAMPLES);
+let replayMode = false;
 
 let statusTimer = 0;
 let knownSources = []; // indexed manuals from /status; used by the out-of-scope hint
@@ -376,13 +383,23 @@ async function refreshStatus() {
     if (!r.ok) throw new Error(String(r.status));
     const j = await r.json();
     document.body.classList.toggle("demo", j.demo_mode === true);
-    $("demoBadge").hidden = j.demo_mode !== true;
+    replayMode = j.replay === true;
+    document.body.classList.toggle("replay", replayMode);
+    $("demoBadge").hidden = !(j.demo_mode === true || replayMode);
+    $("demoBadge").textContent = replayMode ? "Recorded demo" : "Demo";
+    if (replayMode) {
+      $("q").placeholder = "Pick one of the example questions above…";
+      if (Array.isArray(j.examples) && j.examples.length) {
+        renderExamples(j.examples.map((e) => [e.language === "de" ? "de" : "en", e.question, e.source || "not covered by the manuals"]));
+      }
+    }
     if (j.indexing) { // cold start: the sample manuals are still being indexed, so poll instead of showing "No documents"
       s.className = "pill busy"; s.textContent = "Indexing…"; s.title = "Indexing the sample manuals"; s.setAttribute("aria-label", "Indexing the sample manuals");
       clearTimeout(statusTimer); statusTimer = setTimeout(refreshStatus, 2000);
       return;
     }
     knownSources = Array.isArray(j.sources) ? j.sources.filter((x) => typeof x === "string") : [];
+    if (replayMode) { s.className = "pill ready"; s.textContent = "Ready"; s.title = "Answers were recorded once; no model runs here"; return; }
     s.className = "pill " + (j.chunks > 0 ? "ready" : "warn");
     s.textContent = j.chunks > 0 ? `Ready · ${j.chunks}` : "No documents";
     s.setAttribute("aria-label", j.chunks > 0 ? `Ready, ${j.chunks} chunks indexed` : "No documents indexed");
@@ -402,8 +419,9 @@ const CODE_TEXT = {
   too_many_requests: "You are asking too quickly. Please wait a moment and try again.",
   daily_limit: "The demo has reached its daily question limit. Please come back tomorrow.",
   demo_mode: "Uploading and removing documents is turned off in this public demo.",
+  replay_only: "This demo replays recorded answers to its example questions only. Pick one of the cards, or run the project locally to ask your own.",
 };
-const VALIDATION_CODES = new Set(["question_too_long", "question_empty"]);
+const VALIDATION_CODES = new Set(["question_too_long", "question_empty", "replay_only"]);
 class ApiError extends Error {
   constructor(message, { code = null, status = 0 } = {}) {
     super(message); this.code = code; this.status = status;
@@ -732,6 +750,7 @@ function showResult(card, r, steps, secs, turn) {
     setTimeout(() => { cp.lastChild.textContent = "Copy answer"; }, 1800);
   };
   foot.appendChild(cp);
+  if (replayMode) foot.prepend(el("span", "chipf quiet", "Recorded answer"));
   if (!foot.querySelector(".chipf")) foot.hidden = true; // nothing to show (e.g. declined answers)
   card.appendChild(foot);
 
@@ -770,7 +789,7 @@ function showResult(card, r, steps, secs, turn) {
 
   // reasoning (collapsed)
   const rd = el("details", "reason");
-  const sm = el("summary", "", `Reasoning: ${steps.length} step${steps.length === 1 ? "" : "s"} · ${secs.toFixed(1)}s`);
+  const sm = el("summary", "", `Reasoning: ${steps.length} step${steps.length === 1 ? "" : "s"}${replayMode ? " (recorded)" : " · " + secs.toFixed(1) + "s"}`);
   if (steps.some((s) => s.node === "rewrite_query")) sm.appendChild(el("span", "tag", "query rewritten"));
   rd.appendChild(sm);
   const ul = el("ul", "prog");
