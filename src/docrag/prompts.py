@@ -30,9 +30,10 @@ is irrelevant or about a different product; leave it out of the answer entirely.
 - If the sources do not contain enough information, set sufficient=false and say so plainly in \
 the answer (without inventing details).
 - State only what the sources say. Do not comment on the sources' formatting or line breaks.
-- If the question uses different words than the sources (for example "watery" where the manual says \
-"tastes too weak"), say so openly in one sentence and answer with what the sources say about the \
-closest matching case, with its citation. Never present that match as certain.
+- If the question uses different words than the sources (for example "watery" where the \
+manual says "tastes too weak"), say so openly in one sentence and answer with what the \
+sources say about the closest matching case, with its citation. Never present that match \
+as certain.
 - Answer in the same language as the question."""
 GENERATE_HUMAN = "Sources:\n{context}\n\nQuestion: {question}"
 GENERATE_FEEDBACK = """
