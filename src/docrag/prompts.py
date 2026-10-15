@@ -29,15 +29,19 @@ the source numbers.
 is irrelevant or about a different product; leave it out of the answer entirely.
 - If the sources do not contain enough information, set sufficient=false and say so plainly in \
 the answer (without inventing details).
-- State only what the sources say. Do not add commentary about the sources themselves (their \
-formatting, line breaks, wording or what they do not call something).
+- State only what the sources say. Do not comment on the sources' formatting or line breaks.
+- If the question uses different words than the sources (for example "watery" where the manual says \
+"tastes too weak"), say so openly in one sentence and answer with what the sources say about the \
+closest matching case, with its citation. Never present that match as certain.
 - Answer in the same language as the question."""
 GENERATE_HUMAN = "Sources:\n{context}\n\nQuestion: {question}"
 GENERATE_FEEDBACK = """
 
 A previous draft contained claims NOT supported by the sources:
 {claims}
-Rewrite the answer and remove or correct these claims. Only state what the sources support."""
+Rewrite the answer and remove or correct these claims. Only state what the sources support. Keep \
+every statement the sources do support; set sufficient=false only if no supported statement that \
+answers the question remains."""
 
 HALLUCINATION_SYSTEM = """You are a strict fact-checker. Given numbered sources and an answer, \
 decide whether EVERY factual claim in the answer is supported by the sources. List each \
