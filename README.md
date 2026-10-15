@@ -97,6 +97,23 @@ Blueprint, then select this repository, and fill in the two secrets it asks for
 - The frontend is served by the same service, so there is no separate frontend host and no CORS
   setup.
 
+### Alternative: Hugging Face Spaces
+
+`scripts/deploy_hf.py` publishes the same read-only demo as a Docker Space. It builds a minimal
+bundle (Dockerfile, `src/`, the sample manuals, a Space card), bakes the demo settings
+(`DEMO_MODE`, `PRELOAD`, rate limits) into the image so a public Space can never start with uploads
+enabled, and runs as the non-root user a Space requires.
+
+```bash
+huggingface-cli login            # a token with write access
+python scripts/deploy_hf.py --space YOUR_USER/docs-assistant-demo --model MODEL_ID   # private
+python scripts/deploy_hf.py --space YOUR_USER/docs-assistant-demo --make-public      # when ready
+```
+
+Then add `OPENROUTER_API_KEY` as a secret under the Space's Settings. The key is never uploaded by
+the script. If it is missing the page and index still load and questions fail with a logged error.
+`python scripts/deploy_hf.py --dry-run` lists what would be uploaded.
+
 ## Evaluation results
 
 Real, unedited output of `python -m eval.run_eval` (43 questions: 34 answerable, 9 unanswerable or
