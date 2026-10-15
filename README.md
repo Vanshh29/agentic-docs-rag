@@ -100,44 +100,61 @@ Blueprint, then select this repository, and fill in the two secrets it asks for
 ## Evaluation results
 
 Real, unedited output of `python -m eval.run_eval` (43 questions: 34 answerable, 9 unanswerable or
-out of scope). Generator **and** judge are the same model (`claude_cli` / Haiku, temperature 0),
-embeddings `intfloat/multilingual-e5-small`, k=6. Raw data: `eval/results/*.json`; table:
-`eval/results/latest.md`.
+out of scope), measured on 2026-10-15 against an index of the three sample manuals only. Generator
+**and** judge are the same model (`claude_cli` / Haiku), embeddings `intfloat/multilingual-e5-small`,
+k=6. The three columns come from two invocations of the script with identical settings, the second
+run reusing the first one's baseline and `MIN_RELEVANT_DOCS=1` results. Raw data:
+`eval/results/*.json`; table: `eval/results/latest.md`.
 
-| Metric | baseline | agentic [MIN_RELEVANT_DOCS=2] | agentic [MIN_RELEVANT_DOCS=1] |
+| Metric | baseline | agentic [MIN_RELEVANT_DOCS=1] | agentic [MIN_RELEVANT_DOCS=2] |
 |---|---|---|---|
+| Retrieval hit rate@1 | 64.7% | 64.7% | 67.6% |
+| Retrieval hit rate@3 | 97.1% | 97.1% | 100.0% |
 | Retrieval hit rate@k | 100.0% | 100.0% | 100.0% |
-| Answer correctness (LLM judge) | 97.1% | 38.2% | 97.1% |
-| Groundedness (LLM judge) | 81.8% | 92.3% | 97.0% |
-| Citation accuracy | 77.5% | 27.5% | 85.8% |
-| Correct refusal rate (unanswerable) | 100.0% | 100.0% | 100.0% |
-| False refusal rate (answerable) | 2.9% | 61.8% | 2.9% |
-| Avg latency (s) | 5.23 | 67.08 | 36.65 |
-| Avg LLM calls / question | 1.00 | 16.02 | 10.19 |
+| Answer correctness (LLM judge) | 97.1% | 94.1% | 55.9% |
+| Groundedness (LLM judge) | 88.2% | 96.9% | 94.7% |
+| Citation accuracy | 87.0% | 85.8% | 51.0% |
+| Correct refusal rate (unanswerable) | 88.9% | 100.0% | 100.0% |
+| False refusal rate (answerable) | 2.9% | 5.9% | 44.1% |
+| Avg latency (s) | 5.76 | 35.93 | 65.45 |
+| Avg LLM calls / question | 1.00 | 10.49 | 14.98 |
 | Errors | 0 | 0 | 0 |
 
 ## Answer correctness by question category
 
-| Category | baseline | agentic [MIN_RELEVANT_DOCS=2] | agentic [MIN_RELEVANT_DOCS=1] |
+| Category | baseline | agentic [MIN_RELEVANT_DOCS=1] | agentic [MIN_RELEVANT_DOCS=2] |
 |---|---|---|---|
-| cross_lingual | 100.0% | 0.0% | 100.0% |
-| lookup | 100.0% | 37.5% | 100.0% |
-| multi_chunk | 100.0% | 37.5% | 100.0% |
-| vocab_mismatch | 87.5% | 50.0% | 87.5% |
+| cross_lingual (n=2) | 100.0% | 50.0% | 0.0% |
+| lookup (n=16) | 100.0% | 100.0% | 56.2% |
+| multi_chunk (n=8) | 100.0% | 100.0% | 75.0% |
+| vocab_mismatch (n=8) | 87.5% | 87.5% | 50.0% |
 
 **Reading the numbers honestly**
 
-- **The spec default `MIN_RELEVANT_DOCS=2` failed badly here** (38% correct, 62% false refusals).
-  Retrieval was fine (100% hit rate), but each answer lives in one page-sized chunk, so the
-  grader rarely found two relevant chunks; the agent rewrote twice and gave up (18 of 21 wrong
-  refusals). Using `MIN_RELEVANT_DOCS=1` fixes that, so **the default is now 1**. This setting was
-  chosen after seeing the eval, on the same dataset: treat it as tuned, not independently validated.
+- **`MIN_RELEVANT_DOCS=2` is still the wrong setting here**: 55.9% correct and 15 of 34 answerable
+  questions refused (12 of them after two rewrites). Retrieval was fine (100% hit rate), but each
+  answer lives in one page-sized chunk, so the grader rarely finds two relevant chunks. That is
+  better than the previous run (38.2% correct, 21 refusals), but far behind `MIN_RELEVANT_DOCS=1`,
+  so **the default stays 1**. The setting was chosen after seeing the eval, on the same dataset:
+  treat it as tuned, not independently validated.
 - With `MIN_RELEVANT_DOCS=1` the agentic graph **does not beat the baseline on correctness**
-  (97.1% vs 97.1%; both miss the same question) or on refusal quality (both 100%). It is better on
-  **groundedness** (97.0% vs 81.8%) and **citation accuracy** (85.8% vs 77.5%), but costs about
-  **7x the latency and 10x the LLM calls**.
-- Query rewriting fired on only 5 questions and did not change any outcome: this corpus is too
-  small and easy (13 chunks, k=6) to show the benefit rewriting should give on a large library.
+  (94.1% vs 97.1%, i.e. 32 vs 33 of 34 questions). It is better on **groundedness** (96.9% vs
+  88.2%) and on **refusing unanswerable questions** (9 of 9 vs 8 of 9: the baseline has no router,
+  so a greeting reaches the generator and was answered). On **citation accuracy** the two are
+  level (85.8% vs 87.0%); the baseline was clearly behind in the previous run, so that gap was not
+  stable. The price is about **6x the latency and 10x the LLM calls**.
+- **Run-to-run noise is real.** The one question the agentic graph newly missed ("How do I reset the
+  filter change indicator on the air purifier?") was refused in this run, but answered correctly
+  in 6 of 6 repeats of the same question afterwards. The baseline's greeting answer likewise
+  differs from the previous run, where it declined. With a single run per configuration and
+  n = 43, differences of one or two questions should not be read as real.
+- Prompts changed between the previous run and this one (a vocabulary-mismatch rule in the
+  generation prompt, and regeneration feedback that keeps supported statements), so the
+  movement in the table is not attributable to one change. The `MIN_RELEVANT_DOCS=1` columns are
+  otherwise essentially unchanged; the `MIN_RELEVANT_DOCS=2` column improved the most.
+- Query rewriting fired on 6 questions at `MIN_RELEVANT_DOCS=1` (22 at 2). This eval has no
+  no-rewrite run, so it cannot show whether rewriting helped; the corpus (13 chunks, k=6) is also
+  too small to show the benefit rewriting should give on a large library.
 - Caveats: one run per configuration (no variance estimate); small n; LLM-drafted dataset that
   **needs human review**; judge = generator model, which can inflate scores.
 
@@ -169,24 +186,21 @@ embeddings `intfloat/multilingual-e5-small`, k=6. Raw data: `eval/results/*.json
 
 ## Known limitations
 
-- The results table above predates the declined-answer change (for `sufficient=false` the answer
-  text is now the fixed "insufficient information" message and the model draft is dropped); a real
-  rerun of `python -m eval.run_eval` is needed before quoting it.
-- The rewrite path is covered by unit tests but was not observed firing in 6 live probes; there is
-  no harder vocabulary-mismatch benchmark yet.
-- The results table above predates the relative-path chunk ids and the hit@1/hit@3 metrics; rerun
-  `python -m eval.run_eval` before quoting new numbers. With 13 chunks and k=6 a query retrieves
-  about 46% of the index, so hit rate@6 says little.
+- With 13 chunks and k=6 a query retrieves about 46% of the index, so hit rate@6 says little; the
+  hit@1 and hit@3 rows are the more informative retrieval numbers.
+- The rewrite path is covered by unit tests, but the eval cannot isolate its effect and there is no
+  harder vocabulary-mismatch benchmark yet.
 - Cross-lingual retrieval is weak: a German question about the English espresso manual can return
   chunks from other manuals. Only 2 dataset items cover this.
 - Chunking is barely exercised by the samples (every page/section is one chunk); splitting is
   covered by unit tests on long synthetic text only.
-- The web UI was checked with stubbed responses, not against a live LLM or real SSE timing.
+- The web UI was checked by hand against a live model, not by automated browser tests; only the
+  answer-formatting parser has unit tests.
 
 - Sample corpus is tiny and synthetic (3 manuals, 13 chunks): retrieval is easy (100% hit rate even
   for naive RAG), so the eval cannot demonstrate the value of query rewriting; results will not
   transfer to a real manual library.
-- Agentic mode is slow (about 37 s/question through the CLI provider) and uses ~10 LLM calls.
+- Agentic mode is slow (about 36 s/question through the CLI provider) and uses ~10 LLM calls.
 - The eval dataset is LLM-drafted and **needs human review**; the judge may share a model family
   with the generator.
 - Language detection (`langdetect`) is unreliable on short chunks.
