@@ -118,6 +118,9 @@
           border: 2px dashed var(--line); border-radius: 12px; padding: var(--s3) var(--s2); cursor: pointer;
           color: var(--muted); }
   .drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+  .demo-note { display: none; margin: 0 0 12px; color: var(--muted, inherit); font-size: .9rem; }
+  body.demo .demo-note { display: block; }
+  body.demo .addhint, body.demo #addSection, body.demo .doclist .btn { display: none; }
   .drop svg { width: 28px; height: 28px; color: var(--accent); }
   .files { list-style: none; margin: var(--s1) 0 0; padding: 0; display: grid; gap: 6px; }
   .files li { display: flex; align-items: center; gap: var(--s1); font-size: var(--fs-sm); padding: 6px 10px;
@@ -261,10 +264,11 @@
   <div class="dlg-body">
     <section aria-labelledby="idxTitle">
       <h3 id="idxTitle">Indexed documents</h3>
+      <p class="demo-note">This is a read-only public demo with sample manuals. Run the project locally to use your own documents.</p>
       <ul class="doclist" id="doclist" aria-label="Indexed documents"></ul>
       <p id="docmsg" role="status" aria-live="polite"></p>
     </section>
-    <section aria-labelledby="addTitle">
+    <section id="addSection" aria-labelledby="addTitle">
       <h3 id="addTitle">Add documents (PDF or Word)</h3>
       <div class="drop" id="drop" role="button" tabindex="0" aria-describedby="dropHint">
         <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>
@@ -353,6 +357,7 @@ async function refreshStatus() {
     const r = await fetch("/status");
     if (!r.ok) throw new Error(String(r.status));
     const j = await r.json();
+    document.body.classList.toggle("demo", j.demo_mode === true);
     knownSources = Array.isArray(j.sources) ? j.sources.filter((x) => typeof x === "string") : [];
     s.className = "pill " + (j.chunks > 0 ? "ready" : "warn");
     s.textContent = j.chunks > 0 ? `Ready · ${j.chunks}` : "No documents";
@@ -370,6 +375,9 @@ const CODE_TEXT = {
   internal: "Something went wrong on the server. Please try again.",
   question_too_long: "That question is too long (maximum 2000 characters). Please shorten it.",
   question_empty: "Please type a question first.",
+  too_many_requests: "You are asking too quickly. Please wait a moment and try again.",
+  daily_limit: "The demo has reached its daily question limit. Please come back tomorrow.",
+  demo_mode: "Uploading and removing documents is turned off in this public demo.",
 };
 const VALIDATION_CODES = new Set(["question_too_long", "question_empty"]);
 class ApiError extends Error {

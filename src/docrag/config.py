@@ -42,6 +42,14 @@ class Settings(BaseSettings):
     docs_dir: Path = Path("./data/raw")  # where uploaded files are kept and served from
     samples_dir: Path = Path("./data/samples")  # also servable (committed sample manuals)
 
+    # Public deployment
+    demo_mode: bool = False  # read-only: uploads and deletes are refused
+    ask_rate_per_minute: int = Field(default=0, ge=0)  # per client IP; 0 = unlimited
+    ask_daily_limit: int = Field(
+        default=0, ge=0
+    )  # all clients together, per UTC day; 0 = unlimited
+    preload: bool = False  # at startup: load the models and index samples_dir if the index is empty
+
     @model_validator(mode="after")
     def _check_chunking(self) -> Self:
         if self.chunk_overlap >= self.chunk_size:

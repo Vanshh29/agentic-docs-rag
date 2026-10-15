@@ -47,9 +47,11 @@ def test_frontend_and_status() -> None:
     c = client()
     page = c.get("/")
     assert page.status_code == 200 and "Docs Assistant" in page.text
+    assert page.headers["cache-control"] == "no-cache"
     assert c.get("/status").json() == {
         "chunks": 3,
         "model": make_settings().llm_model,
+        "demo_mode": False,
         "sources": ["m.pdf"],
     }
 

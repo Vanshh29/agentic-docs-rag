@@ -9,6 +9,7 @@ import sys
 import tempfile
 import threading
 from collections.abc import AsyncIterator, Callable
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +26,7 @@ from docrag.graph.state import GraphState
 from docrag.ingest import ingest_path
 from docrag.ingest.loaders import SUPPORTED
 from docrag.ingest.pipeline import IngestStats
+from docrag.ratelimit import AskLimiter
 from docrag.schemas import AskRequest, AskResponse
 
 STATIC = Path(__file__).parent / "static"
@@ -89,10 +91,40 @@ def _remove_upload(d: Deps, name: str) -> bool:
     return True
 
 
-def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
-    app = FastAPI(title="Agentic Documentation RAG", version="0.1.0")
+def _demo_blocked() -> HTTPException:
+    return HTTPException(
+        403,
+        {
+            "detail": "Uploading and removing documents is disabled in this demo.",
+            "code": "demo_mode",
+        },
+    )
+
+
+def create_app(
+    deps_factory: Callable[[], Deps] = default_deps, preload: bool | None = None
+) -> FastAPI:
+    """`preload` (default: the PRELOAD setting) warms the models and indexes the sample manuals
+    in the background at startup, so a fresh container with an empty disk is ready quickly."""
     cache: dict[str, Any] = {}
     init_lock = threading.Lock()
+    do_preload = get_settings().preload if preload is None else preload
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        if do_preload:
+            threading.Thread(target=warm_up, name="preload", daemon=True).start()
+        yield
+
+    app = FastAPI(title="Agentic Documentation RAG", version="0.1.0", lifespan=lifespan)
+
+    def warm_up() -> None:
+        try:
+            d = deps()
+            if d.store.count() == 0 and d.settings.samples_dir.is_dir():
+                ingest_path(d.settings.samples_dir, d.store, d.settings)
+        except Exception:
+            log.exception("preload failed; the app will initialise on the first request")
 
     def deps() -> Deps:
         if "graph" not in cache:  # lazy: the embedding model loads on first use, not at import
@@ -100,12 +132,30 @@ def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
                 if "graph" not in cache:
                     d = deps_factory()
                     cache["deps"] = d
+                    cache["limiter"] = AskLimiter(
+                        d.settings.ask_rate_per_minute, d.settings.ask_daily_limit
+                    )
                     cache["graph"] = build_graph(d)  # set last: readers check "graph"
         return cache["deps"]  # type: ignore[no-any-return]
 
     def graph() -> Any:
         deps()
         return cache["graph"]
+
+    def limit_asks(request: Request) -> None:
+        rejection = cache["limiter"].check(request.client.host if request.client else "unknown")
+        if rejection is None:
+            return
+        message = (
+            "The demo has reached its daily question limit. Please come back tomorrow."
+            if rejection.code == "daily_limit"
+            else "Too many questions in a short time. Please wait a moment and try again."
+        )
+        raise HTTPException(
+            429,
+            {"detail": message, "code": rejection.code},
+            headers={"Retry-After": str(rejection.retry_after)},
+        )
 
     @app.exception_handler(HTTPException)
     async def http_exc(request: Request, exc: HTTPException) -> JSONResponse:
@@ -131,7 +181,8 @@ def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
 
     @app.get("/", include_in_schema=False)
     async def index() -> FileResponse:
-        return FileResponse(STATIC / "index.html")
+        # no-cache: browsers must revalidate, otherwise a redeploy can serve a stale page for days
+        return FileResponse(STATIC / "index.html", headers={"Cache-Control": "no-cache"})
 
     @app.get("/status")
     async def status() -> dict[str, Any]:
@@ -139,6 +190,7 @@ def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
         return {
             "chunks": await run_in_threadpool(d.store.count),
             "model": d.settings.llm_model,
+            "demo_mode": d.settings.demo_mode,
             "sources": sorted(await run_in_threadpool(d.store.list_sources)),
         }
 
@@ -147,9 +199,14 @@ def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
         return {"status": "ok"}
 
     @app.post("/ask", response_model=AskResponse)
-    async def ask(req: AskRequest) -> AskResponse:
+    async def ask(req: AskRequest, request: Request) -> AskResponse:
         try:
             d = await run_in_threadpool(deps)
+        except Exception as e:
+            log.exception("/ask failed")
+            raise _error_response(e) from e
+        limit_asks(request)  # outside the try: a 429 must not be reported as a server error
+        try:
             g = cache["graph"]
             return to_response(await run_question(g, req.question), d.settings.min_relevant_docs)
         except Exception as e:
@@ -157,7 +214,9 @@ def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
             raise _error_response(e) from e
 
     @app.post("/ask/stream")
-    async def ask_stream(req: AskRequest) -> StreamingResponse:
+    async def ask_stream(req: AskRequest, request: Request) -> StreamingResponse:
+        await run_in_threadpool(deps)
+        limit_asks(request)
 
         async def events() -> AsyncIterator[str]:
             try:
@@ -226,6 +285,8 @@ def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
     @app.delete("/documents/{file:path}")
     async def delete_document(file: str) -> dict[str, Any]:
         d = await run_in_threadpool(deps)
+        if d.settings.demo_mode:
+            raise _demo_blocked()
 
         def work() -> dict[str, Any] | None:
             # Whitelist: only names the index actually holds; never act on a raw request path.
@@ -250,10 +311,12 @@ def create_app(deps_factory: Callable[[], Deps] = default_deps) -> FastAPI:
 
     @app.post("/ingest", response_model=None)
     async def ingest(file: UploadFile) -> JSONResponse | dict[str, Any]:
+        d = await run_in_threadpool(deps)
+        if d.settings.demo_mode:
+            raise _demo_blocked()
         name = Path(file.filename or "").name
         if not name or name.startswith(".") or Path(name).suffix.lower() not in SUPPORTED:
             raise HTTPException(400, f"Unsupported file type; use one of {sorted(SUPPORTED)}")
-        d = await run_in_threadpool(deps)
 
         def work() -> tuple[IngestStats, Path | None]:
             with tempfile.TemporaryDirectory() as tmp:
