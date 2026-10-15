@@ -4,6 +4,15 @@ Question answering over technical manuals (PDF/DOCX, German + English) with **so
 The agent grades its own retrieval, rewrites weak queries, and verifies that the answer is grounded
 before returning it. `eval/` measures it against a naive RAG baseline.
 
+## Demo
+
+![Demo: upload a manual, ask questions, delete the manual, ask again](docs/media/docs-assistant-demo.gif)
+
+The recording shows the full loop in the browser: upload a PDF, ask a two-part question and get a
+cited answer, remove the file, then ask about it again and get an honest "not found" instead of a
+made-up answer. The manual used is an invented one, so you can reproduce it yourself with
+[`docs/demo/verdant_g4_irrigation_manual.pdf`](docs/demo/verdant_g4_irrigation_manual.pdf).
+
 ## Architecture
 
 ```mermaid
