@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import TypeVar
 
 from langchain_core.embeddings import Embeddings
@@ -13,6 +14,17 @@ from pydantic import BaseModel
 from docrag.config import Settings, get_settings
 
 T = TypeVar("T", bound=BaseModel)
+log = logging.getLogger(__name__)
+
+
+def _api_key(value: str, field: str) -> str:
+    """An empty key makes the client constructor raise, which would take the whole app down at
+    start-up (page, index and demo mode included). Warn and use a placeholder instead: questions
+    then fail with a provider error until the key is configured."""
+    if value:
+        return value
+    log.warning("%s is not set; questions will fail until it is configured", field.upper())
+    return "missing-api-key"
 
 
 def make_llm(settings: Settings | None = None, model: str | None = None) -> BaseChatModel:
@@ -30,7 +42,7 @@ def make_llm(settings: Settings | None = None, model: str | None = None) -> Base
             model_name=name,
             temperature=s.llm_temperature,
             max_tokens=s.llm_max_tokens,
-            api_key=s.anthropic_api_key,  # type: ignore[arg-type]
+            api_key=_api_key(s.anthropic_api_key, "anthropic_api_key"),  # type: ignore[arg-type]
         )
     from langchain_openai import ChatOpenAI
 
@@ -39,14 +51,14 @@ def make_llm(settings: Settings | None = None, model: str | None = None) -> Base
             model=name,
             temperature=s.llm_temperature,
             max_completion_tokens=s.llm_max_tokens,
-            api_key=s.openrouter_api_key,  # type: ignore[arg-type]
+            api_key=_api_key(s.openrouter_api_key, "openrouter_api_key"),  # type: ignore[arg-type]
             base_url=s.openrouter_base_url,
         )
     return ChatOpenAI(
         model=name,
         temperature=s.llm_temperature,
         max_completion_tokens=s.llm_max_tokens,
-        api_key=s.openai_api_key,  # type: ignore[arg-type]
+        api_key=_api_key(s.openai_api_key, "openai_api_key"),  # type: ignore[arg-type]
     )
 
 
