@@ -60,6 +60,23 @@ def test_normal_mode_keeps_uploads_and_delete_working() -> None:
     assert c.delete("/documents/m.pdf").status_code == 200
 
 
+def test_status_reports_indexing_until_the_preload_finishes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import threading
+
+    release = threading.Event()
+    monkeypatch.setattr("docrag.api.ingest_path", lambda p, store, s: release.wait(5))
+    with client(FakeStore([]), preload=True, samples_dir=tmp_path) as c:
+        assert _wait_for(lambda: c.get("/status").json()["indexing"] is True)
+        release.set()
+        assert _wait_for(lambda: c.get("/status").json()["indexing"] is False)
+
+
+def test_status_is_not_indexing_without_preload() -> None:
+    assert client().get("/status").json()["indexing"] is False
+
+
 # --- request limits --------------------------------------------------------------------
 
 

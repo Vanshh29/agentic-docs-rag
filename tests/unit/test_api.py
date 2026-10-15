@@ -52,6 +52,7 @@ def test_frontend_and_status() -> None:
         "chunks": 3,
         "model": make_settings().llm_model,
         "demo_mode": False,
+        "indexing": False,
         "sources": ["m.pdf"],
     }
 

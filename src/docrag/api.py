@@ -113,6 +113,7 @@ def create_app(
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         if do_preload:
+            cache["warming"] = True  # set before the thread starts so /status never misses it
             threading.Thread(target=warm_up, name="preload", daemon=True).start()
         yield
 
@@ -125,6 +126,8 @@ def create_app(
                 ingest_path(d.settings.samples_dir, d.store, d.settings)
         except Exception:
             log.exception("preload failed; the app will initialise on the first request")
+        finally:
+            cache["warming"] = False
 
     def deps() -> Deps:
         if "graph" not in cache:  # lazy: the embedding model loads on first use, not at import
@@ -191,6 +194,7 @@ def create_app(
             "chunks": await run_in_threadpool(d.store.count),
             "model": d.settings.llm_model,
             "demo_mode": d.settings.demo_mode,
+            "indexing": bool(cache.get("warming")),
             "sources": sorted(await run_in_threadpool(d.store.list_sources)),
         }
 
