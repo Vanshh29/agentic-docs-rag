@@ -70,6 +70,33 @@ no API key; `LLM_MODEL=haiku`), `openrouter` (OpenAI-compatible endpoint), `anth
 Embeddings are local and multilingual (`intfloat/multilingual-e5-small`, swappable via
 `EMBEDDING_MODEL`). The vector store sits behind a small `VectorStore` protocol (`store.py`).
 
+## Public demo deployment
+
+The API has no authentication, so a public instance must not allow uploads or deletes and must
+cap how many questions it answers. Four settings (all off by default) cover that:
+
+| Variable | Effect |
+|---|---|
+| `DEMO_MODE=true` | Read-only: `POST /ingest` and `DELETE /documents/*` return 403, and the UI hides upload and remove. |
+| `ASK_RATE_PER_MINUTE=5` | At most 5 questions per minute per client IP (`429` with `Retry-After`). |
+| `ASK_DAILY_LIMIT=200` | At most 200 questions per UTC day across all visitors, a spend cap for the LLM key. |
+| `PRELOAD=true` | At startup, load the models and index `data/samples` if the index is empty. |
+
+The limits are in memory, so they reset on restart and are per instance. That is enough for a
+single-instance demo.
+
+`render.yaml` deploys this as one Docker web service on [Render](https://render.com): New, then
+Blueprint, then select this repository, and fill in the two secrets it asks for
+(`OPENROUTER_API_KEY` and `LLM_MODEL`; any OpenAI-compatible provider works through
+`LLM_PROVIDER=openrouter`). Notes:
+
+- The container uses about 0.9 GB of RAM once the embedding model is loaded, so choose a plan
+  with at least 2 GB of headroom (1 GB is too tight). The model is baked into the image, so a cold start does not download it.
+- The disk is ephemeral. That is fine here: the sample manuals are re-indexed on every start
+  (about 10 s).
+- The frontend is served by the same service, so there is no separate frontend host and no CORS
+  setup.
+
 ## Evaluation results
 
 Real, unedited output of `python -m eval.run_eval` (43 questions: 34 answerable, 9 unanswerable or

@@ -1,0 +1,29 @@
+# Public read-only demo on Render: one Docker web service built from ./Dockerfile.
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repository, then fill in the
+# two secrets marked "sync: false" below.
+services:
+  - type: web
+    name: docs-assistant-demo
+    runtime: docker
+    # The embedding model plus the app use about 0.9 GB of RAM once loaded (measured in the
+    # container), so 512 MB is far too small and 1 GB is too tight. Pick a plan with 2 GB.
+    plan: standard
+    healthCheckPath: /health
+    envVars:
+      # Read-only, rate-limited, and indexed from the committed sample manuals at startup
+      # (the disk is ephemeral, so the index is rebuilt on every start).
+      - key: DEMO_MODE
+        value: "true"
+      - key: PRELOAD
+        value: "true"
+      - key: ASK_RATE_PER_MINUTE
+        value: "5"
+      - key: ASK_DAILY_LIMIT
+        value: "200"
+      # The hosted model is reached through an OpenAI-compatible API.
+      - key: LLM_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: LLM_MODEL # a model id from your provider, for example "vendor/model-name"
+        sync: false
