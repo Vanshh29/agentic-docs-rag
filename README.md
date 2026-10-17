@@ -6,6 +6,12 @@ before returning it. `eval/` measures it against a naive RAG baseline.
 
 ## Demo
 
+[![Watch the demo video on YouTube](https://img.youtube.com/vi/71T4pKsKwdA/hqdefault.jpg)](https://youtu.be/71T4pKsKwdA)
+
+**[Watch the demo video on YouTube](https://youtu.be/71T4pKsKwdA)** (about 3 minutes): upload a
+manual, ask three questions in English and German and get cited answers, delete the manual, then
+ask about it again and get an honest "not found".
+
 ![Demo: upload a manual, ask questions, delete the manual, ask again](docs/media/docs-assistant-demo.gif)
 
 The recording shows the full loop in the browser: upload a PDF, ask a two-part question and get a
